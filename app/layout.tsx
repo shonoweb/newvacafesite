@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
 import { ScrollReset } from "@/components/ScrollReset";
+import { NavMenuProvider } from "@/components/nav-menu-context";
+import { NavOverlay } from "@/components/NavOverlay";
+import { FloatingNavButton } from "@/components/FloatingNavButton";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -63,7 +66,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           dangerouslySetInnerHTML={{ __html: SCROLL_RESET_SCRIPT }}
         />
         <ScrollReset />
-        {children}
+        <NavMenuProvider>
+          {children}
+          <FloatingNavButton />
+          <NavOverlay />
+        </NavMenuProvider>
       </body>
     </html>
   );

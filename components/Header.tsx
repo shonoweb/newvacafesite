@@ -1,29 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { NAV_ITEMS } from "@/data/navigation";
 import { FOCUS_RING_ACCENT } from "@/lib/styles";
 import { handleSectionLinkClick } from "@/lib/scroll";
+import { useNavMenu } from "@/components/nav-menu-context";
 
 export function Header() {
-  const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (!open) return;
-
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
-    }
-
-    document.addEventListener("keydown", handleKeyDown);
-    document.body.style.overflow = "hidden";
-
-    return () => {
-      document.removeEventListener("keydown", handleKeyDown);
-      document.body.style.overflow = "";
-    };
-  }, [open]);
+  const { isOpen, toggle } = useNavMenu();
 
   return (
     <header className="absolute inset-x-0 top-0 z-50">
@@ -51,40 +35,15 @@ export function Header() {
 
         <button
           type="button"
-          aria-label={open ? "メニューを閉じる" : "メニューを開く"}
-          aria-expanded={open}
-          aria-controls="mobile-nav"
-          onClick={() => setOpen((v) => !v)}
+          aria-label="メニューを開く"
+          aria-haspopup="dialog"
+          aria-expanded={isOpen}
+          aria-controls="nav-overlay"
+          onClick={toggle}
           className={`flex h-11 w-11 items-center justify-center rounded-full text-brand-base md:hidden ${FOCUS_RING_ACCENT}`}
         >
-          {open ? <X size={24} /> : <Menu size={24} />}
+          <Menu size={24} />
         </button>
-      </div>
-
-      <div
-        id="mobile-nav"
-        className={`fixed inset-0 z-40 flex flex-col bg-brand transition-opacity duration-300 md:hidden ${
-          open ? "opacity-100" : "pointer-events-none opacity-0"
-        }`}
-      >
-        <nav
-          className="flex flex-1 flex-col items-center justify-center gap-8"
-          aria-label="モバイルナビゲーション"
-        >
-          {NAV_ITEMS.map((item) => (
-            <a
-              key={item.href}
-              href={item.href}
-              onClick={(event) => {
-                setOpen(false);
-                handleSectionLinkClick(event);
-              }}
-              className={`rounded text-2xl font-bold tracking-wide text-brand-base transition-colors hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
-            >
-              {item.label}
-            </a>
-          ))}
-        </nav>
       </div>
     </header>
   );
