@@ -38,8 +38,10 @@ export function Footer() {
       >
         <div>
           <p className="text-2xl font-black tracking-tight">NEWVA CAFE</p>
-          <p className="mt-3 max-w-[22rem] text-sm leading-relaxed text-brand-base/70">
-            コーヒーと自家製ケーキの店。大阪の中心部で、日常的に立ち寄れる一軒を目指しています。
+          <p className="mt-3 max-w-[20rem] text-sm leading-relaxed text-brand-base/70">
+            コーヒーとケーキを気軽に楽しめるカフェです。
+            <br />
+            朝8時から夜8時まで営業しています。
           </p>
         </div>
 

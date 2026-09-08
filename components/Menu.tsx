@@ -62,10 +62,10 @@ export function Menu() {
           MENU
         </span>
         <h2 className="text-3xl font-black leading-tight sm:text-4xl">
-          コーヒーとケーキ、13品。
+          コーヒーとケーキ。
         </h2>
         <p className="max-w-md leading-relaxed text-brand/70">
-          定番のコーヒーと、店内で仕上げる3種のケーキをご用意しています。
+          エスプレッソ、カフェラテ、コールドブリューなどのドリンク10種と、ケーキ3種をご用意しています。
         </p>
       </motion.div>
 

@@ -24,7 +24,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 420,
     description: "深煎り豆を使ったストレートの一杯。",
     image: IMAGES.menu.espresso,
-    alt: "白いカップに注がれたエスプレッソ",
+    alt: "エスプレッソマシンから抽出される2杯分のショット",
   },
   {
     id: "americano",
@@ -57,7 +57,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 550,
     description: "きめ細かなミルクフォームが特徴。",
     image: IMAGES.menu.cappuccino,
-    alt: "木製テーブルに置かれたカプチーノ",
+    alt: "白いカップに注がれたカプチーノ",
   },
   {
     id: "cafe-mocha",
@@ -68,7 +68,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 590,
     description: "チョコレートとエスプレッソの組み合わせ。",
     image: IMAGES.menu.cafeMocha,
-    alt: "カフェモカを抽出するエスプレッソマシン",
+    alt: "チョコレート色のカフェモカ",
   },
   {
     id: "caramel-latte",
@@ -79,7 +79,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 590,
     description: "キャラメルシロップを合わせた甘めの一杯。",
     image: IMAGES.menu.caramelLatte,
-    alt: "キャラメルラテにミルクを注ぐ様子",
+    alt: "陽の当たる木製テーブルに置かれたキャラメルラテ",
   },
   {
     id: "vanilla-latte",
@@ -90,7 +90,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 590,
     description: "バニラの香りをきかせたやさしい味わい。",
     image: IMAGES.menu.vanillaLatte,
-    alt: "アイスバニララテのグラス",
+    alt: "グラスに注がれたバニララテ",
   },
   {
     id: "cold-brew",
@@ -112,7 +112,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "はちみつのコクをプラスしたラテ。",
     image: IMAGES.menu.honeyCafeLatte,
-    alt: "はちみつを合わせたカフェラテを淹れる様子",
+    alt: "木製テーブルに置かれたハニーカフェラテ",
   },
   {
     id: "matcha-espresso-latte",
@@ -123,7 +123,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "抹茶とエスプレッソを合わせた一杯。",
     image: IMAGES.menu.matchaEspressoLatte,
-    alt: "抹茶エスプレッソラテに使う豆",
+    alt: "抹茶ラテのカップ",
   },
   {
     id: "basque-cheesecake",
@@ -134,7 +134,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 580,
     description: "表面を香ばしく焼き上げた濃厚な一切れ。",
     image: IMAGES.menu.basqueCheesecake,
-    alt: "カットされたバスクチーズケーキ",
+    alt: "表面を焼き上げたバスクチーズケーキ",
   },
   {
     id: "chocolate-cake",
@@ -145,7 +145,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 560,
     description: "しっとりとした生地にチョコクリーム。",
     image: IMAGES.menu.chocolateCake,
-    alt: "ケーキスタンドに載ったチョコレートケーキ",
+    alt: "白い皿に盛られたチョコレートケーキ",
   },
   {
     id: "strawberry-shortcake",
@@ -156,7 +156,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "生クリームとベリーを重ねた定番のケーキ。",
     image: IMAGES.menu.strawberryShortcake,
-    alt: "ベリーをのせたショートケーキの一切れ",
+    alt: "いちごをのせたショートケーキ",
   },
 ];
 

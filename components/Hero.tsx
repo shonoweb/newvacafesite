@@ -23,9 +23,9 @@ export function Hero() {
         fill
         preload
         sizes="100vw"
-        className="object-cover"
+        className="object-cover brightness-[1.08] saturate-[1.05]"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-brand/85 via-brand/20 to-brand/10" />
+      <div className="absolute inset-0 bg-gradient-to-t from-brand/65 via-brand/10 to-brand/15" />
 
       <Header />
 
@@ -48,8 +48,10 @@ export function Hero() {
           }}
           className="flex max-w-xl flex-col gap-6"
         >
-          <p className="max-w-md text-base leading-relaxed text-brand-base/90 sm:text-lg">
-            大阪の中心部にある、コーヒーと自家製ケーキの店。開放的な店内で、朝から夜まで気軽に過ごせます。
+          <p className="max-w-lg text-balance text-base leading-relaxed text-brand-base/90 sm:text-lg">
+            コーヒーとケーキを気軽に楽しめる、街なかのカフェ。
+            <br />
+            朝8時から夜8時まで営業しています。
           </p>
 
           <a
