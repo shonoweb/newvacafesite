@@ -5,6 +5,7 @@ import { TextHoverEffect } from "@/components/ui/hover-footer";
 import { FOOTER_INFO, FOOTER_NAV, FOOTER_SOCIAL } from "@/data/footer";
 import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING_ACCENT } from "@/lib/styles";
+import { handleSectionLinkClick } from "@/lib/scroll";
 
 function InstagramIcon() {
   return (
@@ -54,6 +55,7 @@ export function Footer() {
               <li key={item.href}>
                 <a
                   href={item.href}
+                  onClick={handleSectionLinkClick}
                   className={`rounded text-sm text-brand-base/85 transition-colors hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
                 >
                   {item.label}

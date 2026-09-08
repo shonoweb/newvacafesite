@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { NAV_ITEMS } from "@/data/navigation";
 import { FOCUS_RING_ACCENT } from "@/lib/styles";
+import { handleSectionLinkClick } from "@/lib/scroll";
 
 export function Header() {
   const [open, setOpen] = useState(false);
@@ -29,6 +30,7 @@ export function Header() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-5 sm:px-8 sm:py-6">
         <a
           href="#hero"
+          onClick={handleSectionLinkClick}
           className={`rounded text-lg font-black tracking-tight text-brand-base drop-shadow-sm sm:text-xl ${FOCUS_RING_ACCENT}`}
         >
           NEWVA CAFE
@@ -39,6 +41,7 @@ export function Header() {
             <a
               key={item.href}
               href={item.href}
+              onClick={handleSectionLinkClick}
               className={`rounded text-sm font-medium tracking-wide text-brand-base/90 drop-shadow-sm transition-colors hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
             >
               {item.label}
@@ -72,7 +75,10 @@ export function Header() {
             <a
               key={item.href}
               href={item.href}
-              onClick={() => setOpen(false)}
+              onClick={(event) => {
+                setOpen(false);
+                handleSectionLinkClick(event);
+              }}
               className={`rounded text-2xl font-bold tracking-wide text-brand-base transition-colors hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
             >
               {item.label}

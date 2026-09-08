@@ -8,6 +8,7 @@ import { WordsPullUp } from "@/components/ui/words-pull-up";
 import { IMAGES } from "@/data/images";
 import { EASE_SMOOTH } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
+import { handleSectionLinkClick } from "@/lib/scroll";
 
 export function Hero() {
   const prefersReducedMotion = useReducedMotion();
@@ -56,6 +57,7 @@ export function Hero() {
 
           <a
             href="#menu"
+            onClick={handleSectionLinkClick}
             className={`inline-flex w-fit items-center gap-2 rounded-full bg-brand-accent px-6 py-3.5 text-sm font-bold tracking-wide text-brand transition-transform duration-300 hover:scale-[1.03] focus-visible:scale-[1.03] ${FOCUS_RING}`}
           >
             VIEW MENU
