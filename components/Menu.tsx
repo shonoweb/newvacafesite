@@ -11,13 +11,13 @@ import { handleSectionLinkClick } from "@/lib/scroll";
 
 function MenuCard({ item }: { item: MenuItem }) {
   return (
-    <article className="group w-60 shrink-0 sm:w-64">
+    <article className="group w-64 shrink-0 sm:w-72">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-sub">
         <Image
           src={item.image}
           alt={item.alt}
           fill
-          sizes="(min-width: 640px) 256px, 240px"
+          sizes="(min-width: 640px) 288px, 256px"
           className="object-cover transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.06]"
         />
         <span className="absolute left-3 top-3 rounded-full bg-brand-base/90 px-2.5 py-1 text-[11px] font-bold tracking-wider text-brand/70">
@@ -26,9 +26,11 @@ function MenuCard({ item }: { item: MenuItem }) {
       </div>
 
       <div className="mt-4 flex items-start justify-between gap-3">
-        <div className="min-w-0">
-          <h3 className="truncate font-bold text-brand">{item.nameJa}</h3>
-          <p className="truncate text-xs text-brand/50">{item.name}</p>
+        <div className="min-w-0 flex-1">
+          <h3 className="line-clamp-2 min-h-11 font-bold leading-tight text-brand">
+            {item.nameJa}
+          </h3>
+          <p className="line-clamp-1 text-xs text-brand/50">{item.name}</p>
         </div>
         <p className="shrink-0 font-bold text-brand">
           ¥{item.price.toLocaleString()}

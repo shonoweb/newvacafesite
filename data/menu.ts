@@ -79,7 +79,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 590,
     description: "キャラメルシロップを合わせた甘めの一杯。",
     image: IMAGES.menu.caramelLatte,
-    alt: "陽の当たる木製テーブルに置かれたキャラメルラテ",
+    alt: "キャラメルソースが垂れたアイスキャラメルラテ",
   },
   {
     id: "vanilla-latte",
@@ -90,7 +90,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 590,
     description: "バニラの香りをきかせたやさしい味わい。",
     image: IMAGES.menu.vanillaLatte,
-    alt: "グラスに注がれたバニララテ",
+    alt: "ハート型のラテアートを施したバニララテ",
   },
   {
     id: "cold-brew",
@@ -112,7 +112,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "はちみつのコクをプラスしたラテ。",
     image: IMAGES.menu.honeyCafeLatte,
-    alt: "木製テーブルに置かれたハニーカフェラテ",
+    alt: "はちみつのディッパーを添えたハニーカフェラテ",
   },
   {
     id: "matcha-espresso-latte",
@@ -123,7 +123,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "抹茶とエスプレッソを合わせた一杯。",
     image: IMAGES.menu.matchaEspressoLatte,
-    alt: "抹茶ラテのカップ",
+    alt: "抹茶・ミルク・エスプレッソの層が見えるアイスドリンク",
   },
   {
     id: "basque-cheesecake",
@@ -156,7 +156,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "生クリームとベリーを重ねた定番のケーキ。",
     image: IMAGES.menu.strawberryShortcake,
-    alt: "いちごをのせたショートケーキ",
+    alt: "スポンジと生クリーム、いちごを重ねたショートケーキ",
   },
 ];
 
