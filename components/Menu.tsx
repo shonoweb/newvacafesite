@@ -11,7 +11,7 @@ import { handleSectionLinkClick } from "@/lib/scroll";
 
 function MenuCard({ item }: { item: MenuItem }) {
   return (
-    <article className="group w-60 shrink-0 snap-start sm:w-64">
+    <article className="group w-60 shrink-0 sm:w-64">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-sub">
         <Image
           src={item.image}
@@ -70,10 +70,12 @@ export function Menu() {
         </p>
       </motion.div>
 
-      {/* Desktop: auto-scrolling marquee, pauses on hover/focus */}
-      <div className="relative mt-12 hidden md:block">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-24 bg-gradient-to-r from-brand-sub to-transparent" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-24 bg-gradient-to-l from-brand-sub to-transparent" />
+      {/* Infinite carousel: auto-scrolls on pointer/hover devices (paused
+          on hover/focus), and always swipeable/scrollable by hand — on any
+          device — with no physical start or end. */}
+      <div className="relative mt-12">
+        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-brand-sub to-transparent sm:w-24" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-brand-sub to-transparent sm:w-24" />
         <div className="px-5 sm:px-8">
           <MarqueeTrack duration={48}>
             {MENU_ITEMS.map((item) => (
@@ -81,13 +83,6 @@ export function Menu() {
             ))}
           </MarqueeTrack>
         </div>
-      </div>
-
-      {/* Mobile: swipeable, scroll-snap track */}
-      <div className="mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-5 pb-2 no-scrollbar md:hidden">
-        {MENU_ITEMS.map((item) => (
-          <MenuCard key={item.id} item={item} />
-        ))}
       </div>
 
       <div className="mx-auto mt-12 flex max-w-6xl justify-center px-5 sm:px-8">

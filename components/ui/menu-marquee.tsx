@@ -4,142 +4,182 @@ import { useEffect, useRef, type ReactNode } from "react";
 
 interface MarqueeTrackProps {
   children: ReactNode;
-  /** Seconds for one full loop. Lower is faster. */
+  /** Seconds for one full autoplay loop. Lower is faster. */
   duration?: number;
 }
 
+/** How long to wait after the user's last manual scroll before autoplay resumes. */
+const RESUME_DELAY_MS = 900;
+/** Tolerance (px) for recognizing a `scroll` event as one *we* just caused. */
+const OWN_WRITE_EPSILON = 1;
+
 /**
- * Renders two identical copies of `children` side by side and drives the
- * loop with a manual requestAnimationFrame position, not a CSS/Web
- * Animations keyframe. `position` is advanced every frame and wrapped the
- * moment it reaches `setWidth` — the *measured* pixel distance from the
- * start of copy A to the start of copy B (offsetLeft difference), i.e. copy
- * A's own width plus the single gap connecting it to copy B. Because copy B
- * is an exact duplicate of copy A, wrapping at exactly that distance means
- * the frame right after the wrap is pixel-identical to the frame at
- * position 0 — there is no seam to see, at any point, indefinitely, however
- * long it runs.
+ * A bidirectional infinite carousel: three identical copies of `children`
+ * sit side by side, and the *native* `scrollLeft` of the outer container is
+ * the single source of truth for position — for both autoplay and manual
+ * scrolling (trackpad, mouse wheel, drag, touch swipe). Autoplay advances
+ * `scrollLeft` directly instead of animating a separate `transform`, so the
+ * two can never fight over "where the content actually is".
+ *
+ * `singleSetWidth` is the *measured* pixel distance from the start of copy
+ * A to the start of copy B (offsetLeft difference) — copy A's own width
+ * plus the one gap connecting it to copy B. Whenever `scrollLeft` drifts out
+ * of the middle copy's range, it's corrected back into it by exactly that
+ * width, via a plain property assignment (`scrollLeft = x`), which is
+ * always instant — there's no "smooth" variant for the property setter,
+ * only for `scrollTo()`/`scrollBy()` — so the correction can never animate
+ * or show a scroll-position "jump". Content is identical between copies, so
+ * landing on the equivalent spot one copy over is visually invisible.
  */
 export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const firstSetRef = useRef<HTMLDivElement>(null);
-  const secondSetRef = useRef<HTMLDivElement>(null);
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const setARef = useRef<HTMLDivElement>(null);
+  const setBRef = useRef<HTMLDivElement>(null);
 
-  const positionRef = useRef(0);
   const setWidthRef = useRef(0);
-  const pausedRef = useRef(false);
+  const hoveredRef = useRef(false);
+  const userActiveRef = useRef(false);
+  const resumeTimerRef = useRef<number | null>(null);
   const rafIdRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
+  const lastOwnWriteRef = useRef<number | null>(null);
 
   useEffect(() => {
-    if (!trackRef.current || !firstSetRef.current || !secondSetRef.current) {
-      return;
-    }
-    // Narrowed just above, but TS doesn't carry that narrowing into the
-    // nested closures below (they may run later, e.g. from a resize), so
-    // these are re-bound as definitely-non-null for the rest of the effect.
-    const track = trackRef.current;
-    const firstSet = firstSetRef.current;
-    const secondSet = secondSetRef.current;
+    const scroller = scrollerRef.current;
+    const setA = setARef.current;
+    const setB = setBRef.current;
+    if (!scroller || !setA || !setB) return;
 
-    function measure() {
-      const width = secondSet.offsetLeft - firstSet.offsetLeft;
+    function writeScrollLeft(value: number) {
+      lastOwnWriteRef.current = value;
+      scroller!.scrollLeft = value;
+    }
+
+    function measureAndInit() {
+      const width = setB!.offsetLeft - setA!.offsetLeft;
       if (width <= 0) return;
+      const previousWidth = setWidthRef.current;
       setWidthRef.current = width;
-      // If a resize shrank the set width below the current position, wrap
-      // immediately so we never render past the end of the real content.
-      if (positionRef.current >= width) {
-        positionRef.current = positionRef.current % width;
+
+      if (previousWidth === 0) {
+        // First measurement: start on the middle copy, no transition.
+        writeScrollLeft(width);
+      } else if (previousWidth !== width) {
+        // A resize changed card sizing (e.g. crossing a breakpoint) —
+        // preserve the same relative position within the loop instead of
+        // snapping back to the exact start of the middle copy.
+        const ratio = scroller!.scrollLeft / previousWidth;
+        writeScrollLeft(ratio * width);
       }
     }
+
+    measureAndInit();
+
+    const resizeObserver = new ResizeObserver(measureAndInit);
+    resizeObserver.observe(setA);
+
+    function markUserActive() {
+      userActiveRef.current = true;
+      if (resumeTimerRef.current !== null) {
+        window.clearTimeout(resumeTimerRef.current);
+      }
+      resumeTimerRef.current = window.setTimeout(() => {
+        userActiveRef.current = false;
+      }, RESUME_DELAY_MS);
+    }
+
+    function handleScroll() {
+      const width = setWidthRef.current;
+      if (width <= 0) return;
+      const current = scroller!.scrollLeft;
+
+      const isOwnWrite =
+        lastOwnWriteRef.current !== null &&
+        Math.abs(current - lastOwnWriteRef.current) < OWN_WRITE_EPSILON;
+      lastOwnWriteRef.current = null;
+      if (isOwnWrite) return;
+
+      // Genuine user-driven scroll: fold back into the middle copy the
+      // instant we leave it, then treat this as "the user is interacting".
+      if (current >= width * 2) {
+        writeScrollLeft(current - width);
+      } else if (current < width) {
+        writeScrollLeft(current + width);
+      }
+      markUserActive();
+    }
+
+    scroller.addEventListener("scroll", handleScroll, { passive: true });
+
+    const reducedMotionQuery = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    );
+    // Touch-primary devices (no real hover, often no precise pointer) drive
+    // the loop entirely by swipe; autoplay only runs where hover-to-pause
+    // actually makes sense.
+    const finePointerQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
 
     function tick(timestamp: number) {
       const last = lastTimeRef.current;
       lastTimeRef.current = timestamp;
 
       const width = setWidthRef.current;
-      if (last !== null && !pausedRef.current && width > 0) {
+      const shouldAdvance =
+        last !== null &&
+        width > 0 &&
+        !hoveredRef.current &&
+        !userActiveRef.current &&
+        !reducedMotionQuery.matches &&
+        finePointerQuery.matches;
+
+      if (shouldAdvance) {
         const pxPerMs = width / (duration * 1000);
-        let next = positionRef.current + pxPerMs * (timestamp - last);
-        if (next >= width) next -= width;
-        positionRef.current = next;
-        track.style.transform = `translate3d(${-next}px, 0, 0)`;
+        let next = scroller!.scrollLeft + pxPerMs * (timestamp - last);
+        if (next >= width * 2) next -= width;
+        writeScrollLeft(next);
       }
 
       rafIdRef.current = requestAnimationFrame(tick);
     }
 
-    measure();
-
-    const reducedMotionQuery = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    );
-
-    function start() {
-      if (rafIdRef.current !== null) return;
-      lastTimeRef.current = null;
-      rafIdRef.current = requestAnimationFrame(tick);
-    }
-
-    function stop() {
-      if (rafIdRef.current !== null) {
-        cancelAnimationFrame(rafIdRef.current);
-        rafIdRef.current = null;
-      }
-      lastTimeRef.current = null;
-    }
-
-    function syncToPreference() {
-      if (reducedMotionQuery.matches) {
-        stop();
-        track.style.transform = "";
-      } else {
-        start();
-      }
-    }
-
-    syncToPreference();
-    reducedMotionQuery.addEventListener("change", syncToPreference);
-
-    // Card widths are fixed at every viewport where this desktop marquee is
-    // shown, so in practice this only ever re-fires from a late web-font
-    // swap — but re-measuring costs nothing and keeps the loop exact if
-    // that ever changes.
-    const resizeObserver = new ResizeObserver(measure);
-    resizeObserver.observe(firstSet);
+    rafIdRef.current = requestAnimationFrame(tick);
 
     return () => {
-      reducedMotionQuery.removeEventListener("change", syncToPreference);
       resizeObserver.disconnect();
-      stop();
+      scroller.removeEventListener("scroll", handleScroll);
+      if (rafIdRef.current !== null) cancelAnimationFrame(rafIdRef.current);
+      if (resumeTimerRef.current !== null) {
+        window.clearTimeout(resumeTimerRef.current);
+      }
     };
   }, [duration]);
 
-  function pause() {
-    pausedRef.current = true;
+  function handleHoverStart() {
+    hoveredRef.current = true;
   }
 
-  function resume() {
-    pausedRef.current = false;
+  function handleHoverEnd() {
+    hoveredRef.current = false;
   }
 
   return (
     <div
-      className="overflow-x-auto no-scrollbar"
-      onMouseEnter={pause}
-      onMouseLeave={resume}
-      onFocus={pause}
-      onBlur={resume}
+      ref={scrollerRef}
+      data-marquee-scroller
+      className="overflow-x-auto overscroll-x-contain no-scrollbar"
+      onMouseEnter={handleHoverStart}
+      onMouseLeave={handleHoverEnd}
+      onFocus={handleHoverStart}
+      onBlur={handleHoverEnd}
     >
-      <div ref={trackRef} data-marquee-track className="flex w-max gap-5">
-        <div ref={firstSetRef} className="flex shrink-0 gap-5">
+      <div className="flex w-max gap-5">
+        <div ref={setARef} className="flex shrink-0 gap-5">
           {children}
         </div>
-        <div
-          ref={secondSetRef}
-          aria-hidden="true"
-          className="flex shrink-0 gap-5"
-        >
+        <div ref={setBRef} className="flex shrink-0 gap-5">
+          {children}
+        </div>
+        <div aria-hidden="true" className="flex shrink-0 gap-5">
           {children}
         </div>
       </div>
