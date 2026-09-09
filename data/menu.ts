@@ -24,7 +24,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 420,
     description: "深煎り豆を使ったストレートの一杯。",
     image: IMAGES.menu.espresso,
-    alt: "エスプレッソマシンから抽出される2杯分のショット",
+    alt: "クレマの浮いたエスプレッソ1杯",
   },
   {
     id: "americano",
@@ -123,7 +123,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "抹茶とエスプレッソを合わせた一杯。",
     image: IMAGES.menu.matchaEspressoLatte,
-    alt: "鮮やかな抹茶とミルクの層が見えるアイスドリンク",
+    alt: "シンプルなグラスで抹茶とミルクの層が見えるアイスドリンク",
   },
   {
     id: "basque-cheesecake",
