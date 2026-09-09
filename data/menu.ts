@@ -123,7 +123,7 @@ export const MENU_ITEMS: MenuItem[] = [
     price: 620,
     description: "抹茶とエスプレッソを合わせた一杯。",
     image: IMAGES.menu.matchaEspressoLatte,
-    alt: "抹茶・ミルク・エスプレッソの層が見えるアイスドリンク",
+    alt: "鮮やかな抹茶とミルクの層が見えるアイスドリンク",
   },
   {
     id: "basque-cheesecake",
