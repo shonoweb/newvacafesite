@@ -9,24 +9,27 @@ interface MarqueeTrackProps {
 }
 
 /**
- * Renders two identical copies of `children` side by side and animates the
- * track from translateX(0) to translateX(-distance), where `distance` is the
- * *measured* pixel gap between the start of copy A and the start of copy B
- * (offsetLeft difference) — not an assumed 50%. A 50% guess only lines up
- * with "exactly one copy width" when there's zero gap between the two
- * copies; with a real gap between them (from the track's own `gap-5`), 50%
- * of the combined width undershoots the true repeat distance, so the loop
- * snaps a few pixels short every cycle. Measuring the actual DOM distance
- * is immune to that regardless of gap, card count, or viewport width, so
- * copy B always lands exactly where copy A started — the reset is
- * invisible, forever.
+ * Renders two identical copies of `children` side by side and drives the
+ * loop with a manual requestAnimationFrame position, not a CSS/Web
+ * Animations keyframe. `position` is advanced every frame and wrapped the
+ * moment it reaches `setWidth` — the *measured* pixel distance from the
+ * start of copy A to the start of copy B (offsetLeft difference), i.e. copy
+ * A's own width plus the single gap connecting it to copy B. Because copy B
+ * is an exact duplicate of copy A, wrapping at exactly that distance means
+ * the frame right after the wrap is pixel-identical to the frame at
+ * position 0 — there is no seam to see, at any point, indefinitely, however
+ * long it runs.
  */
 export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
   const trackRef = useRef<HTMLDivElement>(null);
   const firstSetRef = useRef<HTMLDivElement>(null);
   const secondSetRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<Animation | null>(null);
-  const userPausedRef = useRef(false);
+
+  const positionRef = useRef(0);
+  const setWidthRef = useRef(0);
+  const pausedRef = useRef(false);
+  const rafIdRef = useRef<number | null>(null);
+  const lastTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (!trackRef.current || !firstSetRef.current || !secondSetRef.current) {
@@ -39,46 +42,57 @@ export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
     const firstSet = firstSetRef.current;
     const secondSet = secondSetRef.current;
 
+    function measure() {
+      const width = secondSet.offsetLeft - firstSet.offsetLeft;
+      if (width <= 0) return;
+      setWidthRef.current = width;
+      // If a resize shrank the set width below the current position, wrap
+      // immediately so we never render past the end of the real content.
+      if (positionRef.current >= width) {
+        positionRef.current = positionRef.current % width;
+      }
+    }
+
+    function tick(timestamp: number) {
+      const last = lastTimeRef.current;
+      lastTimeRef.current = timestamp;
+
+      const width = setWidthRef.current;
+      if (last !== null && !pausedRef.current && width > 0) {
+        const pxPerMs = width / (duration * 1000);
+        let next = positionRef.current + pxPerMs * (timestamp - last);
+        if (next >= width) next -= width;
+        positionRef.current = next;
+        track.style.transform = `translate3d(${-next}px, 0, 0)`;
+      }
+
+      rafIdRef.current = requestAnimationFrame(tick);
+    }
+
+    measure();
+
     const reducedMotionQuery = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     );
 
     function start() {
-      const distance = secondSet.offsetLeft - firstSet.offsetLeft;
-      if (distance <= 0) return;
-
-      const previous = animationRef.current;
-      const resumeAt = previous ? Number(previous.currentTime) || 0 : 0;
-      const wasPaused = previous ? previous.playState === "paused" : false;
-      previous?.cancel();
-
-      const next = track.animate(
-        [
-          { transform: "translateX(0px)" },
-          { transform: `translateX(-${distance}px)` },
-        ],
-        {
-          duration: duration * 1000,
-          iterations: Infinity,
-          easing: "linear",
-        },
-      );
-
-      next.currentTime = resumeAt % (duration * 1000);
-      if (wasPaused || userPausedRef.current) next.pause();
-
-      animationRef.current = next;
+      if (rafIdRef.current !== null) return;
+      lastTimeRef.current = null;
+      rafIdRef.current = requestAnimationFrame(tick);
     }
 
     function stop() {
-      animationRef.current?.cancel();
-      animationRef.current = null;
-      track.style.transform = "";
+      if (rafIdRef.current !== null) {
+        cancelAnimationFrame(rafIdRef.current);
+        rafIdRef.current = null;
+      }
+      lastTimeRef.current = null;
     }
 
     function syncToPreference() {
       if (reducedMotionQuery.matches) {
         stop();
+        track.style.transform = "";
       } else {
         start();
       }
@@ -91,27 +105,22 @@ export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
     // shown, so in practice this only ever re-fires from a late web-font
     // swap — but re-measuring costs nothing and keeps the loop exact if
     // that ever changes.
-    const resizeObserver = new ResizeObserver(() => {
-      if (!reducedMotionQuery.matches) start();
-    });
+    const resizeObserver = new ResizeObserver(measure);
     resizeObserver.observe(firstSet);
 
     return () => {
       reducedMotionQuery.removeEventListener("change", syncToPreference);
       resizeObserver.disconnect();
-      animationRef.current?.cancel();
-      animationRef.current = null;
+      stop();
     };
   }, [duration]);
 
   function pause() {
-    userPausedRef.current = true;
-    animationRef.current?.pause();
+    pausedRef.current = true;
   }
 
   function resume() {
-    userPausedRef.current = false;
-    animationRef.current?.play();
+    pausedRef.current = false;
   }
 
   return (
