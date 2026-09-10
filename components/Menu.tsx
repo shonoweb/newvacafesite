@@ -11,8 +11,8 @@ import { handleSectionLinkClick } from "@/lib/scroll";
 
 function MenuCard({ item }: { item: MenuItem }) {
   return (
-    <article className="group w-64 shrink-0 [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform sm:w-72">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-sub">
+    <article className="group w-64 min-w-64 max-w-64 shrink-0 sm:w-72 sm:min-w-72 sm:max-w-72">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-brand-sub">
         <Image
           src={item.image}
           alt={item.alt}
@@ -25,25 +25,28 @@ function MenuCard({ item }: { item: MenuItem }) {
         </span>
       </div>
 
-      <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
-        <div className="min-w-0">
-          <h3 className="min-h-11 whitespace-normal break-words font-bold leading-tight text-brand">
+      {/* Text content is a plain block at the card's full width — never
+          narrower than the image above it — so the name column always has
+          the entire card width (minus the price column) to lay out in. */}
+      <div className="mt-4 w-full">
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+          <h3 className="min-w-0 whitespace-normal break-words font-bold leading-tight text-brand">
             {item.nameJa}
           </h3>
-          <p className="whitespace-normal break-words text-xs text-brand/50">
-            {item.name}
-          </p>
+          <span className="shrink-0 whitespace-nowrap font-bold text-brand">
+            ¥{item.price.toLocaleString()}
+          </span>
         </div>
-        <p className="whitespace-nowrap font-bold text-brand">
-          ¥{item.price.toLocaleString()}
+        <p className="min-w-0 whitespace-normal break-words text-xs text-brand/50">
+          {item.name}
         </p>
-      </div>
 
-      {item.description && (
-        <p className="mt-1.5 line-clamp-1 text-sm text-brand/60">
-          {item.description}
-        </p>
-      )}
+        {item.description && (
+          <p className="mt-1.5 line-clamp-1 text-sm text-brand/60">
+            {item.description}
+          </p>
+        )}
+      </div>
 
       <span
         aria-hidden="true"
