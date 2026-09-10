@@ -81,8 +81,15 @@ export function Menu() {
           on hover/focus), and always swipeable/scrollable by hand — on any
           device — with no physical start or end. */}
       <div className="relative mt-12">
-        <div className="pointer-events-none absolute inset-y-0 left-0 z-10 w-10 bg-gradient-to-r from-brand-sub to-transparent sm:w-24" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 z-10 w-10 bg-gradient-to-l from-brand-sub to-transparent sm:w-24" />
+        {/* These fades are edge vignettes for the IMAGE row only — their
+            height is pinned to exactly the image block's height (aspect-[4/5]
+            of the card width: 256px card -> 320px tall, 288px card -> 360px
+            tall). Never stretch them with inset-y-0/h-full: a full-height
+            overlay sits (at z-10) on top of the name/price text below the
+            image too, and visibly washes it out whenever a card is near
+            either edge — even while the card itself is fully on screen. */}
+        <div className="pointer-events-none absolute left-0 top-0 z-10 h-80 w-10 bg-gradient-to-r from-brand-sub to-transparent sm:h-[360px] sm:w-24" />
+        <div className="pointer-events-none absolute right-0 top-0 z-10 h-80 w-10 bg-gradient-to-l from-brand-sub to-transparent sm:h-[360px] sm:w-24" />
         <div className="px-5 sm:px-8">
           <MarqueeTrack duration={48}>
             {MENU_ITEMS.map((item) => (
