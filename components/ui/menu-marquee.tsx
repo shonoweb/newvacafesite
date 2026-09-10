@@ -51,8 +51,15 @@ export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
     if (!scroller || !setA || !setB) return;
 
     function writeScrollLeft(value: number) {
-      lastOwnWriteRef.current = value;
-      scroller!.scrollLeft = value;
+      // Round to a whole pixel: writing fractional scrollLeft values every
+      // animation frame forces WebKit to keep re-rasterizing text at
+      // sub-pixel offsets while autoplay runs, which is what produces the
+      // intermittent "glyph doesn't fully paint" glitches during scroll.
+      // Whole-pixel positions let a card's content settle into one stable
+      // compositor layer instead.
+      const rounded = Math.round(value);
+      lastOwnWriteRef.current = rounded;
+      scroller!.scrollLeft = rounded;
     }
 
     function measureAndInit() {

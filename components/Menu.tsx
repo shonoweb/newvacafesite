@@ -11,7 +11,7 @@ import { handleSectionLinkClick } from "@/lib/scroll";
 
 function MenuCard({ item }: { item: MenuItem }) {
   return (
-    <article className="group w-64 shrink-0 sm:w-72">
+    <article className="group w-64 shrink-0 [backface-visibility:hidden] [transform:translateZ(0)] will-change-transform sm:w-72">
       <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-brand-sub">
         <Image
           src={item.image}
