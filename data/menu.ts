@@ -33,7 +33,7 @@ export const MENU_ITEMS: MenuItem[] = [
     name: "Americano",
     nameJa: "アメリカーノ",
     price: 480,
-    description: "エスプレッソをお湯で割った軽やかな味わい。",
+    description: "お湯で割った、すっきりした一杯。",
     image: IMAGES.menu.americano,
     alt: "湯気の立つアメリカーノを注いでいる様子",
   },
