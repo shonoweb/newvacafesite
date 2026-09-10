@@ -10,44 +10,78 @@ import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
 import { handleSectionLinkClick } from "@/lib/scroll";
 
-/** How far (px) inside the carousel's true edges a card's text must sit
- * before it's considered "safely" in view. Peeking cards can still show a
- * cropped sliver of image at the edge — that's the intended teaser effect —
- * but their name/price/description pop in only once the whole text block
- * clears this margin, and pop out completely (not gradually) the moment it
- * doesn't. That's what keeps text from ever being readable half-cut: it's
- * either fully there or not rendered at all, never a partial string. */
-const TEXT_SAFE_MARGIN_PX = 64;
+/** Width (px) of the fade zone at each edge of the carousel's true visible
+ * area. A card's text ramps from fully hidden — right at the edge, exactly
+ * where clipping would start — to fully shown over this distance. Opacity
+ * is driven directly off the text block's real position on every scroll
+ * event (autoplay's own writes fire native `scroll` events same as manual
+ * scrolling does), not off a threshold-crossing + CSS transition: a CSS
+ * transition was tried first and measurably reintroduced the exact bug
+ * during a fast manual flick, because a 150-250ms fade responding to a
+ * binary on/off flip can't keep up with the card's real position at flick
+ * speed, leaving a semi-opaque, partially-clipped string visible for a
+ * frame or two. Recomputing the exact ratio every frame instead means the
+ * displayed opacity is never more than one frame behind reality at any
+ * scroll speed, and — because the ramp is defined to reach 0 exactly at
+ * the physical clip edge — a character is never both clipped and visible:
+ * it fades below perceptibility before the overflow boundary reaches it. */
+const TEXT_FADE_ZONE_PX = 64;
+/** Small, subtle settle distance for the accompanying translateY — driven
+ * by the same ratio as opacity so the two never fall out of sync. */
+const TEXT_FADE_TRANSLATE_PX = 4;
 
-function useSafelyVisible<T extends HTMLElement>() {
+function clamp01(value: number) {
+  return Math.min(1, Math.max(0, value));
+}
+
+function useEdgeFade<T extends HTMLElement>() {
   const ref = useRef<T>(null);
-  // Default to visible so text isn't invisible on first paint before the
-  // observer's first callback lands — worst case is one frame of a
-  // peeking card showing its text a moment early, never a stuck blank.
-  const [visible, setVisible] = useState(true);
+  // Default to fully shown so a centered card's text isn't invisible on
+  // first paint before the first measurement lands — worst case is one
+  // frame of a peeking card showing its text a moment early.
+  const [ratio, setRatio] = useState(1);
 
   useEffect(() => {
     const el = ref.current;
-    const root = el?.closest("[data-marquee-scroller]");
-    if (!el || !root) return;
+    const scroller = el?.closest("[data-marquee-scroller]") as HTMLElement | null;
+    if (!el || !scroller) return;
 
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.intersectionRatio >= 0.99),
-      {
-        root,
-        rootMargin: `0px -${TEXT_SAFE_MARGIN_PX}px 0px -${TEXT_SAFE_MARGIN_PX}px`,
-        threshold: [0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1],
-      },
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
+    function update() {
+      const scrollerRect = scroller!.getBoundingClientRect();
+      const textRect = el!.getBoundingClientRect();
+
+      const hardLeft = scrollerRect.left;
+      const hardRight = scrollerRect.right;
+      const safeLeft = hardLeft + TEXT_FADE_ZONE_PX;
+      const safeRight = hardRight - TEXT_FADE_ZONE_PX;
+
+      const fromLeftEdge = clamp01((textRect.left - hardLeft) / (safeLeft - hardLeft));
+      const fromRightEdge = clamp01((hardRight - textRect.right) / (hardRight - safeRight));
+
+      setRatio(Math.min(fromLeftEdge, fromRightEdge));
+    }
+
+    update();
+    scroller.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    return () => {
+      scroller.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
   }, []);
 
-  return { ref, visible };
+  return {
+    ref,
+    style: {
+      opacity: ratio,
+      transform: `translateY(${(1 - ratio) * TEXT_FADE_TRANSLATE_PX}px)`,
+      pointerEvents: ratio < 0.5 ? ("none" as const) : ("auto" as const),
+    },
+  };
 }
 
 function MenuCard({ item }: { item: MenuItem }) {
-  const { ref: textRef, visible: textVisible } = useSafelyVisible<HTMLDivElement>();
+  const { ref: textRef, style: textStyle } = useEdgeFade<HTMLDivElement>();
 
   return (
     <article className="group w-64 min-w-64 max-w-64 shrink-0 sm:w-72 sm:min-w-72 sm:max-w-72">
@@ -67,20 +101,11 @@ function MenuCard({ item }: { item: MenuItem }) {
       {/* Text content is a plain block at the card's full width — never
           narrower than the image above it — so the name column always has
           the entire card width (minus the price column) to lay out in.
-          Its opacity is binary and un-transitioned on purpose (see
-          useSafelyVisible above): fully shown once the card clears the
-          carousel's edges, fully hidden the instant it doesn't — a peeking
-          card never shows half a name, half a price, or a description cut
-          off mid-sentence. A fade transition here was tried and measurably
-          reintroduces that exact glitch during a fast manual flick: the
-          200ms+ it takes to animate down to 0 is long enough for the card
-          to have already scrolled well past the edge, so a semi-opaque,
-          partially clipped string is visible for a frame or two. Instant
-          show/hide has no such window. */}
-      <div
-        ref={textRef}
-        className={`mt-4 w-full ${textVisible ? "opacity-100" : "opacity-0"}`}
-      >
+          Opacity/translateY are driven live by useEdgeFade above: fades in
+          as the card clears each edge, fades out as it approaches one —
+          see that function's comment for why it's a per-frame computed
+          style rather than a CSS transition. */}
+      <div ref={textRef} style={textStyle} className="mt-4 w-full">
         <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
           <h3 className="min-w-0 whitespace-normal break-words font-bold leading-tight text-brand">
             {item.nameJa}
