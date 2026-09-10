@@ -25,14 +25,16 @@ function MenuCard({ item }: { item: MenuItem }) {
         </span>
       </div>
 
-      <div className="mt-4 flex items-start justify-between gap-3">
-        <div className="min-w-0 flex-1">
-          <h3 className="line-clamp-2 min-h-11 font-bold leading-tight text-brand">
+      <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+        <div className="min-w-0">
+          <h3 className="min-h-11 whitespace-normal break-words font-bold leading-tight text-brand">
             {item.nameJa}
           </h3>
-          <p className="line-clamp-1 text-xs text-brand/50">{item.name}</p>
+          <p className="whitespace-normal break-words text-xs text-brand/50">
+            {item.name}
+          </p>
         </div>
-        <p className="shrink-0 font-bold text-brand">
+        <p className="whitespace-nowrap font-bold text-brand">
           ¥{item.price.toLocaleString()}
         </p>
       </div>
