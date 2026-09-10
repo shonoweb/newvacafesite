@@ -3,13 +3,52 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { MarqueeTrack } from "@/components/ui/menu-marquee";
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
 import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
 import { handleSectionLinkClick } from "@/lib/scroll";
 
+/** How far (px) inside the carousel's true edges a card's text must sit
+ * before it's considered "safely" in view. Peeking cards can still show a
+ * cropped sliver of image at the edge — that's the intended teaser effect —
+ * but their name/price/description pop in only once the whole text block
+ * clears this margin, and pop out completely (not gradually) the moment it
+ * doesn't. That's what keeps text from ever being readable half-cut: it's
+ * either fully there or not rendered at all, never a partial string. */
+const TEXT_SAFE_MARGIN_PX = 64;
+
+function useSafelyVisible<T extends HTMLElement>() {
+  const ref = useRef<T>(null);
+  // Default to visible so text isn't invisible on first paint before the
+  // observer's first callback lands — worst case is one frame of a
+  // peeking card showing its text a moment early, never a stuck blank.
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    const el = ref.current;
+    const root = el?.closest("[data-marquee-scroller]");
+    if (!el || !root) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setVisible(entry.intersectionRatio >= 0.99),
+      {
+        root,
+        rootMargin: `0px -${TEXT_SAFE_MARGIN_PX}px 0px -${TEXT_SAFE_MARGIN_PX}px`,
+        threshold: [0, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1],
+      },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  return { ref, visible };
+}
+
 function MenuCard({ item }: { item: MenuItem }) {
+  const { ref: textRef, visible: textVisible } = useSafelyVisible<HTMLDivElement>();
+
   return (
     <article className="group w-64 min-w-64 max-w-64 shrink-0 sm:w-72 sm:min-w-72 sm:max-w-72">
       <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-brand-sub">
@@ -27,8 +66,21 @@ function MenuCard({ item }: { item: MenuItem }) {
 
       {/* Text content is a plain block at the card's full width — never
           narrower than the image above it — so the name column always has
-          the entire card width (minus the price column) to lay out in. */}
-      <div className="mt-4 w-full">
+          the entire card width (minus the price column) to lay out in.
+          Its opacity is binary and un-transitioned on purpose (see
+          useSafelyVisible above): fully shown once the card clears the
+          carousel's edges, fully hidden the instant it doesn't — a peeking
+          card never shows half a name, half a price, or a description cut
+          off mid-sentence. A fade transition here was tried and measurably
+          reintroduces that exact glitch during a fast manual flick: the
+          200ms+ it takes to animate down to 0 is long enough for the card
+          to have already scrolled well past the edge, so a semi-opaque,
+          partially clipped string is visible for a frame or two. Instant
+          show/hide has no such window. */}
+      <div
+        ref={textRef}
+        className={`mt-4 w-full ${textVisible ? "opacity-100" : "opacity-0"}`}
+      >
         <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
           <h3 className="min-w-0 whitespace-normal break-words font-bold leading-tight text-brand">
             {item.nameJa}
