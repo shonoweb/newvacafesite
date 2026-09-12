@@ -10,6 +10,13 @@ interface ExpandingImageRowProps {
   images: GalleryImage[];
 }
 
+/** Resting-state (not-hovered) width per position, in source order. Kept
+ * close to the old uniform w-40 (160px) but not identical across the row —
+ * one photo a little wider, none mirrored — so the row reads as a
+ * deliberately set composition rather than a UI-kit row of identical tiles.
+ * Cycles if there are ever more images than entries here. */
+const BASE_WIDTHS = ["w-36", "w-40", "w-48", "w-36", "w-44", "w-40"];
+
 export function ExpandingImageRow({ images }: ExpandingImageRowProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
@@ -29,7 +36,7 @@ export function ExpandingImageRow({ images }: ExpandingImageRowProps) {
             onBlur={() => setActiveIndex(null)}
             className={cn(
               "group relative h-full flex-grow overflow-hidden rounded-2xl transition-[width] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
-              isActive ? "w-full" : "w-24 sm:w-40",
+              isActive ? "w-full" : BASE_WIDTHS[index % BASE_WIDTHS.length],
               FOCUS_RING,
             )}
           >

@@ -8,33 +8,33 @@ export interface GalleryImage {
 
 export const GALLERY_IMAGES: GalleryImage[] = [
   {
-    id: "interior",
-    src: IMAGES.gallery.interior,
-    alt: "自然光が入るNEWVA CAFEの店内",
+    id: "greenhouse",
+    src: IMAGES.gallery.greenhouse,
+    alt: "観葉植物に囲まれた明るい店内スペース",
   },
   {
-    id: "cheers",
-    src: IMAGES.gallery.cheers,
-    alt: "ラテアートのカップを合わせる二人",
+    id: "window-seat",
+    src: IMAGES.gallery.windowSeat,
+    alt: "窓際に並んだ木製のカウンター席",
   },
   {
-    id: "beans",
-    src: IMAGES.gallery.beans,
-    alt: "焙煎したコーヒー豆",
+    id: "drink",
+    src: IMAGES.gallery.drink,
+    alt: "木のテーブルに置かれたアイスドリンク",
+  },
+  {
+    id: "tables",
+    src: IMAGES.gallery.tables,
+    alt: "自然光が差し込むテーブル席",
+  },
+  {
+    id: "window-detail",
+    src: IMAGES.gallery.windowDetail,
+    alt: "窓辺の光に照らされたカップ",
   },
   {
     id: "cake",
     src: IMAGES.gallery.cake,
-    alt: "スタンドに並んだチョコレートケーキ",
-  },
-  {
-    id: "pour",
-    src: IMAGES.gallery.pour,
-    alt: "ハンドドリップでコーヒーを淹れる様子",
-  },
-  {
-    id: "counter",
-    src: IMAGES.gallery.counter,
-    alt: "カウンターでスタッフが接客する様子",
+    alt: "陽の光が差すケーキの一切れ",
   },
 ];

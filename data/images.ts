@@ -23,11 +23,11 @@ export const IMAGES = {
   },
 
   gallery: {
-    interior: unsplash("1521017432531-fbd92d768814", 1400),
-    cheers: unsplash("1495474472287-4d71bcdd2085", 1400),
-    beans: unsplash("1445116572660-236099ec97a0", 1400),
-    cake: unsplash("1586985289906-406988974504", 1400),
-    pour: unsplash("1442550528053-c431ecb55509", 1400),
-    counter: unsplash("1571115177098-24ec42ed204d", 1400),
+    greenhouse: unsplash("1769501203675-919307554822", 1400),
+    windowSeat: unsplash("1769473357479-d94ce818dba7", 1400),
+    tables: unsplash("1554538693-d854cceb26a9", 1400),
+    windowDetail: unsplash("1677729437372-2d35520a3d0e", 1400),
+    drink: unsplash("1728978096068-0f15dc964c4c", 1400),
+    cake: unsplash("1611440482670-ffde2ed2223d", 1400),
   },
 } as const;

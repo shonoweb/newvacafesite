@@ -20,7 +20,7 @@ export function Gallery() {
           GALLERY
         </span>
         <h2 className="text-3xl font-black leading-tight sm:text-4xl">
-          店内の雰囲気。
+          NEWVA CAFEの店内。
         </h2>
       </motion.div>
 
