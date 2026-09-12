@@ -5,15 +5,15 @@ import { MapPin } from "lucide-react";
 import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 
 const INFO_ROWS = [
-  { label: "住所", value: "OSAKA / SAMPLE LOCATION" },
-  { label: "アクセス", value: "最寄駅から徒歩8分" },
+  { label: "住所", value: "大阪・中崎町" },
+  { label: "アクセス", value: "中崎町駅から徒歩5分" },
   { label: "営業時間", value: "8:00 - 20:00（L.O. 19:30）" },
   { label: "定休日", value: "不定休" },
 ];
 
 export function Location() {
   return (
-    <section id="access" className="bg-brand-sub py-16 sm:py-20">
+    <section id="access" className="bg-brand-sub pb-16 pt-14 sm:pb-20 sm:pt-[70px]">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 md:grid-cols-2 md:items-start md:gap-14 lg:gap-20">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -67,10 +67,10 @@ export function Location() {
               OSAKA
             </p>
             <p className="mt-1 text-xs font-bold tracking-[0.25em] text-brand/50">
-              SAMPLE LOCATION
+              NAKAZAKICHO
             </p>
           </div>
-          <p className="text-xs text-brand/40">最寄駅から徒歩8分</p>
+          <p className="text-xs text-brand/40">中崎町駅から徒歩5分</p>
         </motion.div>
       </div>
     </section>
