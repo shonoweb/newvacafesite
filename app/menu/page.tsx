@@ -22,7 +22,7 @@ export default function MenuPage() {
       <MenuPageHeader />
 
       <main className="flex flex-1 flex-col">
-        <section className="pb-10 pt-14 sm:pb-14 sm:pt-20">
+        <section className="pb-8 pt-14 sm:pb-11 sm:pt-20">
           <div className="mx-auto max-w-6xl px-5 sm:px-8">
             <span className="inline-flex items-center gap-2 text-sm font-bold tracking-[0.2em] text-brand/60">
               <span

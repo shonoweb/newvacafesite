@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { FOCUS_RING } from "@/lib/styles";
 
 const NAV_LINKS = [
@@ -16,6 +19,8 @@ const NAV_LINKS = [
  * this one is plain brand-on-brand-base, in normal document flow.
  */
 export function MenuPageHeader() {
+  const pathname = usePathname();
+
   return (
     <header className="border-b border-brand/10 bg-brand-base">
       <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8 sm:py-6">
@@ -30,15 +35,27 @@ export function MenuPageHeader() {
           className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:gap-x-6"
           aria-label="メインナビゲーション"
         >
-          {NAV_LINKS.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className={`rounded text-sm font-medium tracking-wide text-brand/70 transition-colors hover:text-brand ${FOCUS_RING}`}
-            >
-              {item.label}
-            </Link>
-          ))}
+          {NAV_LINKS.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                aria-current={isActive ? "page" : undefined}
+                className={`relative inline-block rounded text-sm font-medium tracking-wide transition-colors ${FOCUS_RING} ${
+                  isActive ? "text-brand" : "text-brand/70 hover:text-brand"
+                }`}
+              >
+                {item.label}
+                {isActive && (
+                  <span
+                    aria-hidden="true"
+                    className="absolute inset-x-0 -bottom-2 h-[2px] rounded-full bg-brand-accent"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
       </div>
     </header>
