@@ -25,9 +25,9 @@ export const IMAGES = {
   gallery: {
     wideInterior: unsplash("1542181961-9590d0c79dab", 1400),
     seating: unsplash("1703042200709-23afbb342e52", 1400),
-    drink: unsplash("1566656117208-c23e67f4ce8c", 1400),
+    drink: unsplash("1486482044844-888b371f410c", 1400),
     counter: unsplash("1551887196-72e32bfc7bf3", 1400),
     detail: unsplash("1785302710677-69cc4ea97bee", 1400),
-    cake: unsplash("1636365241819-54947e20d49a", 1400),
+    cake: unsplash("1684278838729-4aaa0e0f8ebc", 1400),
   },
 } as const;

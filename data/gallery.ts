@@ -20,7 +20,7 @@ export const GALLERY_IMAGES: GalleryImage[] = [
   {
     id: "drink",
     src: IMAGES.gallery.drink,
-    alt: "店内のテーブルに置かれたアイスラテ",
+    alt: "観葉植物のそばの木製テーブルに置かれたカフェラテ",
   },
   {
     id: "counter",
@@ -35,6 +35,6 @@ export const GALLERY_IMAGES: GalleryImage[] = [
   {
     id: "cake",
     src: IMAGES.gallery.cake,
-    alt: "店内のカウンターに置かれたケーキ",
+    alt: "店内の木製テーブルに置かれたケーキ",
   },
 ];
