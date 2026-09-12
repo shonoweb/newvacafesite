@@ -24,9 +24,15 @@ export function Hero() {
         fill
         preload
         sizes="100vw"
-        className="object-cover brightness-[1.08] saturate-[1.05]"
+        className="object-cover brightness-[1.16] saturate-[1.05]"
       />
+      {/* Bottom fade: keeps the title/copy/button readable against the photo. */}
       <div className="absolute inset-0 bg-gradient-to-t from-brand/65 via-brand/10 to-brand/15" />
+      {/* Top fade: on its own, separate from the bottom one, so it stays very
+          light and fades out well before the mid-point — just enough to lift
+          the white nav text off the bright ceiling behind it, not a general
+          darkening of the upper photo. */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-[42svh] bg-gradient-to-b from-brand/40 via-brand/10 to-transparent" />
 
       <Header />
 
