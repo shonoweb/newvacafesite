@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Menu } from "lucide-react";
 import { EASE_SMOOTH } from "@/lib/motion";
@@ -12,10 +13,19 @@ import { useNavMenu } from "@/components/nav-menu-context";
  * scrolls away with Hero — this fills the gap for every section after it,
  * on every breakpoint, reusing the same overlay Hero's mobile hamburger
  * opens. Hidden while Hero is in view and while the overlay itself is open.
+ *
+ * Lives in the root layout, so it's never unmounted by a client-side route
+ * change — the `pathname` dependency below matters: without it, navigating
+ * away from "/" (where Hero had already scrolled out of view) leaves the
+ * observer watching a now-detached #hero node, which reports
+ * isIntersecting: false forever, so the button would incorrectly keep
+ * showing on pages — like /menu — that have no Hero at all. Re-running the
+ * effect per route re-checks for #hero on whatever page is now mounted.
  */
 export function FloatingNavButton() {
   const { isOpen, open } = useNavMenu();
   const [heroVisible, setHeroVisible] = useState(true);
+  const pathname = usePathname();
   const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
@@ -28,8 +38,14 @@ export function FloatingNavButton() {
     );
 
     observer.observe(hero);
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      // Leaving a page that had #hero: reset to the "hidden" default so a
+      // route with no Hero at all doesn't inherit a stale false reading
+      // from the disconnected observer.
+      setHeroVisible(true);
+    };
+  }, [pathname]);
 
   const visible = !heroVisible && !isOpen;
 

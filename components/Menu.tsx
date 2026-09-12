@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -8,7 +9,6 @@ import { MarqueeTrack } from "@/components/ui/menu-marquee";
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
 import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
-import { handleSectionLinkClick } from "@/lib/scroll";
 
 /** Width (px) of the fade zone at each edge of the carousel's true visible
  * area. A card's text ramps from fully hidden — right at the edge, exactly
@@ -177,14 +177,13 @@ export function Menu() {
       </div>
 
       <div className="mx-auto mt-12 flex max-w-6xl justify-center px-5 sm:px-8">
-        <a
-          href="#menu"
-          onClick={handleSectionLinkClick}
+        <Link
+          href="/menu"
           className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-brand/20 px-6 py-2.5 text-sm font-bold tracking-wide text-brand transition-colors hover:border-brand hover:bg-brand hover:text-brand-base ${FOCUS_RING}`}
         >
           VIEW ALL MENU
           <ArrowRight size={16} />
-        </a>
+        </Link>
       </div>
     </section>
   );
