@@ -39,13 +39,13 @@ export function About() {
             </span>
 
             <h2 className="mt-4 text-3xl font-black leading-[1.2] [word-break:keep-all] sm:text-4xl md:text-[1.9rem] lg:text-4xl">
-              コーヒーとケーキを、
+              朝のコーヒーも、
               <br />
-              いつでも気軽に。
+              午後のケーキも。
             </h2>
 
             <p className="mt-5 max-w-sm leading-relaxed text-brand/80">
-              NEWVA CAFEでは、定番のコーヒーと店内で仕上げるケーキをご用意しています。明るい店内で、朝の一杯にも、買い物途中の休憩にも気軽にお立ち寄りください。
+              エスプレッソを使った定番のドリンクと、店内で仕上げる3種類のケーキをご用意しています。朝のコーヒーにも、買い物途中の休憩にもどうぞ。
             </p>
 
             <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs font-bold tracking-[0.15em] text-brand/45">
