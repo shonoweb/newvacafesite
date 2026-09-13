@@ -40,15 +40,15 @@ export function Footer() {
         <div>
           <p className="text-2xl font-black tracking-tight">NEWVA CAFE</p>
           <p className="mt-3 max-w-[20rem] text-sm leading-relaxed text-brand-base/70">
-            コーヒーとケーキを気軽に楽しめるカフェです。
+            コーヒーとケーキの店。
             <br />
-            朝8時から夜8時まで営業しています。
+            大阪・中崎町で8:00から営業しています。
           </p>
         </div>
 
         <nav aria-label="フッターナビゲーション">
           <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
-            MENU
+            NAVIGATION
           </p>
           <ul className="mt-4 flex flex-col gap-3">
             {FOOTER_NAV.map((item) => (

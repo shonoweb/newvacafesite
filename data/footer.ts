@@ -12,5 +12,5 @@ export const FOOTER_SOCIAL = [
 export const FOOTER_INFO = [
   { label: "営業時間", value: "8:00 - 20:00（L.O. 19:30）" },
   { label: "定休日", value: "不定休" },
-  { label: "所在地", value: "OSAKA / SAMPLE LOCATION" },
+  { label: "所在地", value: "大阪・中崎町" },
 ];
