@@ -67,10 +67,9 @@ export function FloatingNavButton() {
             duration: prefersReducedMotion ? 0 : 0.4,
             ease: EASE_SMOOTH,
           }}
-          className={`fixed right-5 top-5 z-50 flex items-center gap-2 rounded-full bg-brand px-4 py-2.5 text-sm font-bold tracking-wide text-brand-base transition-colors hover:bg-brand-accent hover:text-brand sm:right-8 sm:top-6 ${FOCUS_RING_ACCENT}`}
+          className={`fixed right-5 top-5 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-brand text-brand-base transition-colors hover:bg-brand-accent hover:text-brand sm:right-8 sm:top-6 ${FOCUS_RING_ACCENT}`}
         >
-          <Menu size={18} strokeWidth={2.25} />
-          MENU
+          <Menu size={20} strokeWidth={2.25} />
         </motion.button>
       )}
     </AnimatePresence>
