@@ -32,8 +32,13 @@ export function Gallery() {
       {/* Mobile: horizontal swipe, scroll-snap. touch-action: pan-x tells
           the browser up front that only horizontal panning belongs to this
           row, so a swipe that starts over it is never ambiguous between
-          this row and the page's own vertical scroll. */}
-      <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto px-5 pb-2 no-scrollbar [touch-action:pan-x] md:hidden">
+          this row and the page's own vertical scroll. overscroll-x-contain
+          stops this row's scroll interaction from chaining out to the
+          page — the standard mitigation for WebKit bug 240861 (any nested
+          horizontal overflow container can make iOS Safari's address bar
+          shift mid vertical-swipe; Apple resolved it as intentional Safari
+          UI behavior, not something fixable from page code alone). */}
+      <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-5 pb-2 no-scrollbar [touch-action:pan-x] md:hidden">
         {GALLERY_IMAGES.map((image) => (
           <div
             key={image.id}

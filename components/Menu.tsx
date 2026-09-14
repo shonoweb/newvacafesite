@@ -244,9 +244,16 @@ export function Menu() {
 
       {/* Mobile (<768px): plain native horizontal scroll + scroll-snap, no
           autoplay, no duplicated sets, no JS scroll/resize listeners. See
-          MobileMenuCard above for why. */}
+          MobileMenuCard above for why. overscroll-x-contain matters even
+          though this row never bounces on its own: any nested horizontal
+          overflow container is enough to make iOS Safari's chrome (address
+          bar) shift as a vertical swipe passes over it — that's WebKit bug
+          240861, resolved by Apple as intentional Safari UI behavior with
+          no code-level fix, only mitigations. Containing overscroll here
+          stops this row's own scroll interaction from chaining out to the
+          page, which is the standard mitigation for it. */}
       <div
-        className="mt-12 flex snap-x snap-proximity gap-4 overflow-x-auto px-5 pb-2 no-scrollbar [touch-action:pan-x] md:hidden"
+        className="mt-12 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-5 pb-2 no-scrollbar [touch-action:pan-x] md:hidden"
       >
         {MENU_ITEMS.map((item) => (
           <MobileMenuCard key={item.id} item={item} />
