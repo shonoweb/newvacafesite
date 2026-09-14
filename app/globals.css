@@ -17,8 +17,18 @@
   --font-sans: var(--font-noto-sans-jp);
 }
 
-html {
-  scroll-behavior: smooth;
+/* Desktop only. On mobile this is left to native momentum scrolling —
+   in-page nav links (lib/scroll.ts) still animate smoothly there by
+   passing `behavior: "smooth"` explicitly to scrollIntoView(), which
+   overrides this property regardless; what this rule actually controls
+   is every *other* scroll on the page, i.e. the user's own finger-driven
+   scrolling. WebKit's iOS Safari has well-documented cases where a global
+   `scroll-behavior: smooth` measurably degrades native touch-scroll
+   smoothness, which is the opposite of what it's for here. */
+@media (min-width: 768px) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {

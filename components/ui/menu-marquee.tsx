@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, type ReactNode } from "react";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 interface MarqueeTrackProps {
   children: ReactNode;
@@ -44,11 +45,22 @@ export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
   const lastTimeRef = useRef<number | null>(null);
   const lastOwnWriteRef = useRef<number | null>(null);
 
+  // This track is only ever rendered inside Menu's `hidden md:block`
+  // desktop wrapper, but a CSS `display: none` ancestor doesn't stop React
+  // effects from running — without this guard, the ResizeObserver, scroll
+  // listener, and rAF autoplay loop below would all stay live on mobile
+  // too, just invisibly. That's real, continuous main-thread work (forced
+  // layout reads every animation frame, a ResizeObserver callback, a
+  // `scroll` listener) competing with the browser's own scroll handling,
+  // which is exactly the kind of thing that shows up as a stutter/jerk
+  // during native touch-scrolling on the rest of the page.
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   useEffect(() => {
     const scroller = scrollerRef.current;
     const setA = setARef.current;
     const setB = setBRef.current;
-    if (!scroller || !setA || !setB) return;
+    if (!isDesktop || !scroller || !setA || !setB) return;
 
     function writeScrollLeft(value: number) {
       // Round to a whole pixel: writing fractional scrollLeft values every
@@ -159,7 +171,7 @@ export function MarqueeTrack({ children, duration = 42 }: MarqueeTrackProps) {
         window.clearTimeout(resumeTimerRef.current);
       }
     };
-  }, [duration]);
+  }, [duration, isDesktop]);
 
   function handleHoverStart() {
     hoveredRef.current = true;

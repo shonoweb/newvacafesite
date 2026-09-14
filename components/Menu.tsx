@@ -9,6 +9,7 @@ import { MarqueeTrack } from "@/components/ui/menu-marquee";
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
 import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
+import { useMediaQuery } from "@/lib/use-media-query";
 
 /** Width (px) of the fade zone at each edge of the carousel's true visible
  * area. A card's text ramps from fully hidden — right at the edge, exactly
@@ -41,10 +42,22 @@ function useEdgeFade<T extends HTMLElement>() {
   // frame of a peeking card showing its text a moment early.
   const [ratio, setRatio] = useState(1);
 
+  // MenuCard (and this hook) is only ever rendered inside the desktop
+  // `hidden md:block` marquee, but `display: none` doesn't stop effects
+  // from running — every one of the 39 hidden instances (13 items x the
+  // marquee's 3 duplicated sets) would otherwise keep a `scroll` listener
+  // and a `window` "resize" listener live on mobile too. iOS Safari fires
+  // `resize` repeatedly while its address bar animates during an ordinary
+  // scroll, so that's up to 39 forced-layout reads plus React state
+  // updates firing on the main thread in the middle of the user's own
+  // scroll gesture — see the matching guard in menu-marquee.tsx for the
+  // full reasoning.
+  const isDesktop = useMediaQuery("(min-width: 768px)");
+
   useEffect(() => {
     const el = ref.current;
     const scroller = el?.closest("[data-marquee-scroller]") as HTMLElement | null;
-    if (!el || !scroller) return;
+    if (!isDesktop || !el || !scroller) return;
 
     function update() {
       const scrollerRect = scroller!.getBoundingClientRect();
@@ -68,7 +81,7 @@ function useEdgeFade<T extends HTMLElement>() {
       scroller.removeEventListener("scroll", update);
       window.removeEventListener("resize", update);
     };
-  }, []);
+  }, [isDesktop]);
 
   return {
     ref,
