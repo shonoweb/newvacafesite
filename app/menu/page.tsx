@@ -78,11 +78,11 @@ export default function MenuPage() {
 
         <div className="mx-auto w-full max-w-6xl px-5 pb-16 pt-4 sm:px-8">
           <Link
-            href="/"
+            href="/#menu"
             className={`inline-flex min-h-11 items-center gap-2 rounded-full border border-brand/20 px-5 py-2.5 text-sm font-bold tracking-wide text-brand transition-colors hover:border-brand hover:bg-brand hover:text-brand-base ${FOCUS_RING}`}
           >
             <ArrowLeft size={16} />
-            BACK TO HOME
+            BACK TO MENU
           </Link>
         </div>
       </main>
