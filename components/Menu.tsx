@@ -133,6 +133,58 @@ function MenuCard({ item }: { item: MenuItem }) {
   );
 }
 
+/** Mobile card (<768px): plain, static markup — no `useEdgeFade`, no active-
+ * index tracking, no scroll/resize listeners of any kind. Name, English
+ * name, price, and description are always at full opacity from the first
+ * frame the section is in view, which is the actual fix for "01 Espresso
+ * is unreadably faded on mobile": that card was never dim on purpose, it
+ * was the desktop edge-fade ratio (tuned for the 3x-duplicated marquee's
+ * geometry) misreading a narrow phone viewport as "near an edge". Having
+ * zero JS here also means this row can't be the source of the vertical
+ * "jerk" entering/leaving the section — there's nothing that reads or
+ * writes scroll position, so there's nothing to fight the page's own
+ * scroll with. `touch-action: pan-x` tells the browser up front that only
+ * horizontal panning belongs to this element, so an imperfectly-vertical
+ * swipe starting over the row is never ambiguous. */
+function MobileMenuCard({ item }: { item: MenuItem }) {
+  return (
+    <article className="w-[78vw] shrink-0 snap-center">
+      <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-brand-sub">
+        <Image
+          src={item.image}
+          alt={item.alt}
+          fill
+          sizes="78vw"
+          className="object-cover"
+        />
+        <span className="absolute left-3 top-3 rounded-full bg-brand-base/90 px-2.5 py-1 text-[11px] font-bold tracking-wider text-brand/70">
+          {item.no}
+        </span>
+      </div>
+
+      <div className="mt-4 w-full">
+        <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-start gap-3">
+          <h3 className="min-w-0 whitespace-normal break-words font-bold leading-tight text-brand">
+            {item.nameJa}
+          </h3>
+          <span className="shrink-0 whitespace-nowrap font-bold text-brand">
+            ¥{item.price.toLocaleString()}
+          </span>
+        </div>
+        <p className="min-w-0 whitespace-normal break-words text-xs text-brand/50">
+          {item.name}
+        </p>
+
+        {item.description && (
+          <p className="mt-1.5 line-clamp-1 text-sm text-brand/60">
+            {item.description}
+          </p>
+        )}
+      </div>
+    </article>
+  );
+}
+
 export function Menu() {
   return (
     <section id="menu" className="bg-brand-sub py-20 sm:py-28">
@@ -154,10 +206,11 @@ export function Menu() {
         </p>
       </motion.div>
 
-      {/* Infinite carousel: auto-scrolls on pointer/hover devices (paused
-          on hover/focus), and always swipeable/scrollable by hand — on any
-          device — with no physical start or end. */}
-      <div className="relative mt-12">
+      {/* Desktop (>=768px): infinite carousel, auto-scrolls on pointer/hover
+          devices (paused on hover/focus), and always swipeable/scrollable
+          by hand. Untouched — mobile now has its own simpler
+          implementation below instead of sharing this one. */}
+      <div className="relative mt-12 hidden md:block">
         {/* These fades are edge vignettes for the IMAGE row only — their
             height is pinned to exactly the image block's height (aspect-[4/5]
             of the card width: 256px card -> 320px tall, 288px card -> 360px
@@ -174,6 +227,17 @@ export function Menu() {
             ))}
           </MarqueeTrack>
         </div>
+      </div>
+
+      {/* Mobile (<768px): plain native horizontal scroll + scroll-snap, no
+          autoplay, no duplicated sets, no JS scroll/resize listeners. See
+          MobileMenuCard above for why. */}
+      <div
+        className="mt-12 flex snap-x snap-proximity gap-4 overflow-x-auto px-5 pb-2 no-scrollbar [touch-action:pan-x] md:hidden"
+      >
+        {MENU_ITEMS.map((item) => (
+          <MobileMenuCard key={item.id} item={item} />
+        ))}
       </div>
 
       <div className="mx-auto mt-12 flex max-w-6xl justify-center px-5 sm:px-8">
