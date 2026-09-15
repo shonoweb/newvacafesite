@@ -164,10 +164,16 @@ function MenuCard({ item }: { item: MenuItem }) {
  * to the page underneath. On a real device that meant a vertical swipe
  * starting on a product photo didn't scroll the page at all. Leaving
  * `touch-action` at its default `auto` lets the browser do its normal,
- * correct per-gesture axis disambiguation instead. */
+ * correct per-gesture axis disambiguation instead.
+ *
+ * A/B diagnostic: no `snap-*` here either, temporarily — scroll-snap-align
+ * removed to test whether it (or the row's overscroll-behavior-x, see the
+ * row below) is a residual contributor to the section-boundary "jerk"
+ * that persisted after the touch-action fix. Card width/gap/radius are
+ * unchanged; only the snap alignment is gone for this test. */
 function MobileMenuCard({ item }: { item: MenuItem }) {
   return (
-    <article className="w-[78vw] shrink-0 snap-center">
+    <article className="w-[78vw] shrink-0">
       <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl bg-brand-sub">
         <Image
           src={item.image}
@@ -260,19 +266,19 @@ export function Menu() {
         </div>
       </div>
 
-      {/* Mobile (<768px): plain native horizontal scroll + scroll-snap, no
-          autoplay, no duplicated sets, no JS scroll/resize listeners. See
-          MobileMenuCard above for why. overscroll-x-contain matters even
-          though this row never bounces on its own: any nested horizontal
-          overflow container is enough to make iOS Safari's chrome (address
-          bar) shift as a vertical swipe passes over it — that's WebKit bug
-          240861, resolved by Apple as intentional Safari UI behavior with
-          no code-level fix, only mitigations. Containing overscroll here
-          stops this row's own scroll interaction from chaining out to the
-          page, which is the standard mitigation for it. No `touch-action`
-          override — see MobileMenuCard above for why that's deliberate. */}
+      {/* Mobile (<768px): plain native horizontal scroll, no autoplay, no
+          duplicated sets, no JS scroll/resize listeners. See
+          MobileMenuCard above for why. No `touch-action` override — see
+          MobileMenuCard above for why that's deliberate.
+          A/B diagnostic: no `snap-x`/scroll-snap-type and no
+          overscroll-x-contain here either, temporarily — testing whether
+          either is a residual contributor to the section-boundary "jerk"
+          that persisted after the touch-action fix. Pure
+          `overflow-x: auto` only. If this turns out to help, contain
+          should come back before snap does (per the requested next step)
+          so each can be attributed individually. */}
       <div
-        className="mt-12 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-5 pb-2 no-scrollbar md:hidden"
+        className="mt-12 flex gap-4 overflow-x-auto px-5 pb-2 no-scrollbar md:hidden"
       >
         {MENU_ITEMS.map((item) => (
           <MobileMenuCard key={item.id} item={item} />

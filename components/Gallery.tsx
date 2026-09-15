@@ -41,26 +41,28 @@ export function Gallery() {
         <ExpandingImageRow images={GALLERY_IMAGES} />
       </div>
 
-      {/* Mobile: horizontal swipe, scroll-snap. overscroll-x-contain stops
-          this row's scroll interaction from chaining out to the page — the
-          standard mitigation for WebKit bug 240861 (any nested horizontal
-          overflow container can make iOS Safari's address bar shift mid
-          vertical-swipe; Apple resolved it as intentional Safari UI
-          behavior, not something fixable from page code alone).
-          Deliberately no `touch-action` override: `pan-x` was tried here
-          first, but per the CSS Touch Action spec, once a touch starts on
-          an element restricted to `pan-x`, the browser has no permitted
-          native action for that gesture's vertical component for the rest
-          of the touch — and that restriction doesn't fall through to the
-          page underneath. On a real device that meant a vertical swipe
-          starting on a photo didn't scroll the page at all. Leaving
-          `touch-action` at its default `auto` lets the browser do its
-          normal, correct per-gesture axis disambiguation instead. */}
-      <div className="mt-8 flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-5 pb-2 no-scrollbar md:hidden">
+      {/* Mobile: horizontal swipe. Deliberately no `touch-action` override:
+          `pan-x` was tried here first, but per the CSS Touch Action spec,
+          once a touch starts on an element restricted to `pan-x`, the
+          browser has no permitted native action for that gesture's
+          vertical component for the rest of the touch — and that
+          restriction doesn't fall through to the page underneath. On a
+          real device that meant a vertical swipe starting on a photo
+          didn't scroll the page at all. Leaving `touch-action` at its
+          default `auto` lets the browser do its normal, correct
+          per-gesture axis disambiguation instead.
+          A/B diagnostic: no `snap-x`/scroll-snap-type and no
+          overscroll-x-contain here either, temporarily — testing whether
+          either is a residual contributor to the section-boundary "jerk"
+          that persisted after the touch-action fix. Pure
+          `overflow-x: auto` only. If this turns out to help, contain
+          should come back before snap does (per the requested next step)
+          so each can be attributed individually. */}
+      <div className="mt-8 flex gap-3 overflow-x-auto px-5 pb-2 no-scrollbar md:hidden">
         {GALLERY_IMAGES.map((image) => (
           <div
             key={image.id}
-            className="relative aspect-[3/4] w-[78vw] shrink-0 snap-start overflow-hidden rounded-2xl"
+            className="relative aspect-[3/4] w-[78vw] shrink-0 overflow-hidden rounded-2xl"
           >
             <Image
               src={image.src}
