@@ -16,7 +16,20 @@ export function Hero() {
   return (
     <section
       id="hero"
-      className="relative flex min-h-[100svh] w-full flex-col overflow-hidden bg-brand"
+      // Mobile (<768px): min-height comes from --initial-viewport-height,
+      // a CSS variable frozen once at first load by the beforeInteractive
+      // script in app/layout.tsx (FREEZE_HERO_VIEWPORT_SCRIPT) — never
+      // updated on resize/visualViewport resize/scroll, only on an actual
+      // device rotation. Real-device measurement showed Hero was the only
+      // section whose rendered height tracked iOS Safari's toolbar
+      // show/hide 1:1 despite already using min-h-[100svh], which should
+      // have been immune to exactly that per spec. Freezing the value
+      // instead of relying on the unit removes the toolbar's ability to
+      // move Hero's height at all. The `100svh` fallback only matters
+      // before the script runs (there's no other gap — it's
+      // beforeInteractive, so in practice this is for JS-disabled cases).
+      // Desktop (>=768px) is untouched: min-h-[100svh], same as before.
+      className="relative flex min-h-[var(--initial-viewport-height,100svh)] w-full flex-col overflow-hidden bg-brand md:min-h-[100svh]"
     >
       <Image
         src={IMAGES.heroInterior}
