@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { TextHoverEffect } from "@/components/ui/hover-footer";
 import { FOOTER_INFO, FOOTER_NAV, FOOTER_SOCIAL } from "@/data/footer";
-import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING_ACCENT } from "@/lib/styles";
 import { handleSectionLinkClick } from "@/lib/scroll";
 
@@ -28,72 +28,84 @@ function InstagramIcon() {
 export function Footer() {
   const year = new Date().getFullYear();
 
+  const content = (
+    <>
+      <div>
+        <p className="text-2xl font-black tracking-tight">NEWVA CAFE</p>
+        <p className="mt-3 max-w-[20rem] text-sm leading-relaxed text-brand-base/70">
+          コーヒーとケーキの店。
+          <br />
+          大阪・中崎町で8:00から営業しています。
+        </p>
+      </div>
+
+      <nav aria-label="フッターナビゲーション">
+        <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
+          NAVIGATION
+        </p>
+        <ul className="mt-4 flex flex-col gap-3">
+          {FOOTER_NAV.map((item) => (
+            <li key={item.href}>
+              <a
+                href={item.href}
+                onClick={handleSectionLinkClick}
+                className={`rounded text-sm text-brand-base/85 transition-colors hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      <div>
+        <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
+          INFO
+        </p>
+        <ul className="mt-4 flex flex-col gap-3 text-sm text-brand-base/85">
+          {FOOTER_INFO.map((row) => (
+            <li key={row.label} className="flex gap-2">
+              <span className="text-brand-base/50">{row.label}</span>
+              <span>{row.value}</span>
+            </li>
+          ))}
+        </ul>
+
+        <div className="mt-5 flex gap-3">
+          {FOOTER_SOCIAL.map((social) => (
+            <a
+              key={social.label}
+              href={social.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={social.label}
+              className={`flex h-11 w-11 items-center justify-center rounded-full border border-brand-base/25 text-brand-base transition-colors hover:border-brand-accent hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
+            >
+              <InstagramIcon />
+            </a>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <footer id="contact" className="bg-brand text-brand-base">
+      {/* Desktop: fade-up reveal, untouched. */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEWPORT_ONCE}
         transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
-        className={`mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-3 ${SECTION_REVEAL_Y}`}
+        className="mx-auto hidden max-w-6xl gap-12 px-5 py-16 sm:px-8 sm:py-20 md:grid md:grid-cols-3"
       >
-        <div>
-          <p className="text-2xl font-black tracking-tight">NEWVA CAFE</p>
-          <p className="mt-3 max-w-[20rem] text-sm leading-relaxed text-brand-base/70">
-            コーヒーとケーキの店。
-            <br />
-            大阪・中崎町で8:00から営業しています。
-          </p>
-        </div>
-
-        <nav aria-label="フッターナビゲーション">
-          <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
-            NAVIGATION
-          </p>
-          <ul className="mt-4 flex flex-col gap-3">
-            {FOOTER_NAV.map((item) => (
-              <li key={item.href}>
-                <a
-                  href={item.href}
-                  onClick={handleSectionLinkClick}
-                  className={`rounded text-sm text-brand-base/85 transition-colors hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
-                >
-                  {item.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
-
-        <div>
-          <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
-            INFO
-          </p>
-          <ul className="mt-4 flex flex-col gap-3 text-sm text-brand-base/85">
-            {FOOTER_INFO.map((row) => (
-              <li key={row.label} className="flex gap-2">
-                <span className="text-brand-base/50">{row.label}</span>
-                <span>{row.value}</span>
-              </li>
-            ))}
-          </ul>
-
-          <div className="mt-5 flex gap-3">
-            {FOOTER_SOCIAL.map((social) => (
-              <a
-                key={social.label}
-                href={social.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={social.label}
-                className={`flex h-11 w-11 items-center justify-center rounded-full border border-brand-base/25 text-brand-base transition-colors hover:border-brand-accent hover:text-brand-accent ${FOCUS_RING_ACCENT}`}
-              >
-                <InstagramIcon />
-              </a>
-            ))}
-          </div>
-        </div>
+        {content}
       </motion.div>
+
+      {/* Mobile diagnostic: plain static element, no motion. */}
+      <div className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 sm:py-20 md:hidden">
+        {content}
+      </div>
 
       <div className="border-t border-brand-base/10 px-5 py-6 text-center text-xs text-brand-base/50 sm:px-8">
         © {year} NEWVA CAFE. All rights reserved.

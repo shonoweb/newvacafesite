@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 
 const INFO_ROWS = [
   { label: "住所", value: "大阪・中崎町" },
@@ -12,67 +12,92 @@ const INFO_ROWS = [
 ];
 
 export function Location() {
+  const infoContent = (
+    <>
+      <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
+        VISIT US
+      </span>
+      <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
+        NEWVA CAFE
+      </h2>
+
+      <dl className="mt-8 flex flex-col gap-4">
+        {INFO_ROWS.map((row) => (
+          <div
+            key={row.label}
+            className="flex flex-col gap-1 border-b border-brand/10 pb-4 sm:flex-row sm:items-baseline sm:gap-6"
+          >
+            <dt className="w-24 shrink-0 text-sm font-bold text-brand/50">
+              {row.label}
+            </dt>
+            <dd className="text-brand">{row.value}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <p className="mt-6 text-sm text-brand/50">
+        ※本サイトは制作サンプルのため、架空の店舗情報を掲載しています。
+      </p>
+    </>
+  );
+
+  const mapContent = (
+    <>
+      <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-accent text-brand shadow-sm">
+        <MapPin size={22} strokeWidth={2.25} />
+      </span>
+      <div className="text-center">
+        <p className="text-xl font-black tracking-tight text-brand">OSAKA</p>
+        <p className="mt-1 text-xs font-bold tracking-[0.25em] text-brand/50">
+          NAKAZAKICHO
+        </p>
+      </div>
+      <p className="text-xs text-brand/40">中崎町駅から徒歩5分</p>
+    </>
+  );
+
+  const mapBackgroundStyle = {
+    backgroundImage:
+      "linear-gradient(rgba(38,22,6,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,22,6,0.06) 1px, transparent 1px)",
+    backgroundSize: "28px 28px",
+  };
+
   return (
     <section id="access" className="bg-brand-sub pb-16 pt-14 sm:pb-20 sm:pt-[70px]">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 sm:px-8 md:grid-cols-2 md:items-start md:gap-14 lg:gap-20">
+        {/* Desktop: fade-up reveal, untouched. */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT_ONCE}
           transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
-          className={SECTION_REVEAL_Y}
+          className="hidden md:block"
         >
-          <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
-            VISIT US
-          </span>
-          <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
-            NEWVA CAFE
-          </h2>
-
-          <dl className="mt-8 flex flex-col gap-4">
-            {INFO_ROWS.map((row) => (
-              <div
-                key={row.label}
-                className="flex flex-col gap-1 border-b border-brand/10 pb-4 sm:flex-row sm:items-baseline sm:gap-6"
-              >
-                <dt className="w-24 shrink-0 text-sm font-bold text-brand/50">
-                  {row.label}
-                </dt>
-                <dd className="text-brand">{row.value}</dd>
-              </div>
-            ))}
-          </dl>
-
-          <p className="mt-6 text-sm text-brand/50">
-            ※本サイトは制作サンプルのため、架空の店舗情報を掲載しています。
-          </p>
+          {infoContent}
         </motion.div>
 
+        {/* Mobile diagnostic: plain static element, no motion. */}
+        <div className="md:hidden">{infoContent}</div>
+
+        {/* Desktop: fade-up reveal, untouched. */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT_ONCE}
           transition={{ duration: DURATION.base, delay: 0.1, ease: EASE_SMOOTH }}
-          className={`relative flex h-[240px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-brand-base sm:h-[260px] md:h-[300px] ${SECTION_REVEAL_Y}`}
-          style={{
-            backgroundImage:
-              "linear-gradient(rgba(38,22,6,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,22,6,0.06) 1px, transparent 1px)",
-            backgroundSize: "28px 28px",
-          }}
+          className="relative hidden h-[240px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-brand-base sm:h-[260px] md:flex md:h-[300px]"
+          style={mapBackgroundStyle}
         >
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-accent text-brand shadow-sm">
-            <MapPin size={22} strokeWidth={2.25} />
-          </span>
-          <div className="text-center">
-            <p className="text-xl font-black tracking-tight text-brand">
-              OSAKA
-            </p>
-            <p className="mt-1 text-xs font-bold tracking-[0.25em] text-brand/50">
-              NAKAZAKICHO
-            </p>
-          </div>
-          <p className="text-xs text-brand/40">中崎町駅から徒歩5分</p>
+          {mapContent}
         </motion.div>
+
+        {/* Mobile diagnostic: plain static element, no motion. */}
+        <div
+          className="relative flex h-[240px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-brand-base sm:h-[260px] md:hidden"
+          style={mapBackgroundStyle}
+        >
+          {mapContent}
+        </div>
       </div>
     </section>
   );

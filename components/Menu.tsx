@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarqueeTrack } from "@/components/ui/menu-marquee";
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
-import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
 import { useMediaQuery } from "@/lib/use-media-query";
 
@@ -156,9 +156,15 @@ function MenuCard({ item }: { item: MenuItem }) {
  * zero JS here also means this row can't be the source of the vertical
  * "jerk" entering/leaving the section — there's nothing that reads or
  * writes scroll position, so there's nothing to fight the page's own
- * scroll with. `touch-action: pan-x` tells the browser up front that only
- * horizontal panning belongs to this element, so an imperfectly-vertical
- * swipe starting over the row is never ambiguous. */
+ * scroll with. No `touch-action` override, deliberately: `pan-x` was
+ * tried here first and was itself a bug — per the CSS Touch Action spec,
+ * once a touch starts on an element restricted to `pan-x`, the browser
+ * has no permitted native action for that gesture's vertical component
+ * for the rest of the touch, and that restriction doesn't fall through
+ * to the page underneath. On a real device that meant a vertical swipe
+ * starting on a product photo didn't scroll the page at all. Leaving
+ * `touch-action` at its default `auto` lets the browser do its normal,
+ * correct per-gesture axis disambiguation instead. */
 function MobileMenuCard({ item }: { item: MenuItem }) {
   return (
     <article className="w-[78vw] shrink-0 snap-center">
@@ -199,25 +205,37 @@ function MobileMenuCard({ item }: { item: MenuItem }) {
 }
 
 export function Menu() {
+  const heading = (
+    <>
+      <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
+        MENU
+      </span>
+      <h2 className="text-3xl font-black leading-tight sm:text-4xl">
+        コーヒーとケーキ。
+      </h2>
+      <p className="max-w-md leading-relaxed text-brand/70">
+        エスプレッソ、カフェラテ、コールドブリューなどのドリンク10種と、ケーキ3種をご用意しています。
+      </p>
+    </>
+  );
+
   return (
     <section id="menu" className="bg-brand-sub py-20 sm:py-28">
+      {/* Desktop: fade-up reveal, untouched. */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEWPORT_ONCE}
+        whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
-        className={`mx-auto flex max-w-6xl flex-col gap-3 px-5 sm:px-8 ${SECTION_REVEAL_Y}`}
+        className="mx-auto hidden max-w-6xl flex-col gap-3 px-5 sm:px-8 md:flex"
       >
-        <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
-          MENU
-        </span>
-        <h2 className="text-3xl font-black leading-tight sm:text-4xl">
-          コーヒーとケーキ。
-        </h2>
-        <p className="max-w-md leading-relaxed text-brand/70">
-          エスプレッソ、カフェラテ、コールドブリューなどのドリンク10種と、ケーキ3種をご用意しています。
-        </p>
+        {heading}
       </motion.div>
+
+      {/* Mobile diagnostic: plain static element, no motion. */}
+      <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 sm:px-8 md:hidden">
+        {heading}
+      </div>
 
       {/* Desktop (>=768px): infinite carousel, auto-scrolls on pointer/hover
           devices (paused on hover/focus), and always swipeable/scrollable
@@ -251,9 +269,10 @@ export function Menu() {
           240861, resolved by Apple as intentional Safari UI behavior with
           no code-level fix, only mitigations. Containing overscroll here
           stops this row's own scroll interaction from chaining out to the
-          page, which is the standard mitigation for it. */}
+          page, which is the standard mitigation for it. No `touch-action`
+          override — see MobileMenuCard above for why that's deliberate. */}
       <div
-        className="mt-12 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-5 pb-2 no-scrollbar [touch-action:pan-x] md:hidden"
+        className="mt-12 flex snap-x snap-proximity gap-4 overflow-x-auto overscroll-x-contain px-5 pb-2 no-scrollbar md:hidden"
       >
         {MENU_ITEMS.map((item) => (
           <MobileMenuCard key={item.id} item={item} />
