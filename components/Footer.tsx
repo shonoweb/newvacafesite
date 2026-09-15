@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { TextHoverEffect } from "@/components/ui/hover-footer";
 import { FOOTER_INFO, FOOTER_NAV, FOOTER_SOCIAL } from "@/data/footer";
-import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING_ACCENT } from "@/lib/styles";
 import { handleSectionLinkClick } from "@/lib/scroll";
 
@@ -35,7 +35,7 @@ export function Footer() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEWPORT_ONCE}
         transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
-        className="mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-3"
+        className={`mx-auto grid max-w-6xl gap-12 px-5 py-16 sm:px-8 sm:py-20 md:grid-cols-3 ${SECTION_REVEAL_Y}`}
       >
         <div>
           <p className="text-2xl font-black tracking-tight">NEWVA CAFE</p>

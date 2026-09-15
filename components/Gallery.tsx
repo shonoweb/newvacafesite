@@ -4,7 +4,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ExpandingImageRow } from "@/components/ui/image-gallery";
 import { GALLERY_IMAGES } from "@/data/gallery";
-import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
 
 export function Gallery() {
   return (
@@ -14,7 +14,7 @@ export function Gallery() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEWPORT_ONCE}
         transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
-        className="mx-auto flex max-w-6xl flex-col gap-3 px-5 sm:px-8"
+        className={`mx-auto flex max-w-6xl flex-col gap-3 px-5 sm:px-8 ${SECTION_REVEAL_Y}`}
       >
         <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
           GALLERY

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { IMAGES } from "@/data/images";
-import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
 
 export function About() {
   return (
@@ -31,7 +31,7 @@ export function About() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={VIEWPORT_ONCE}
             transition={{ duration: DURATION.base, ease: EASE_SMOOTH, delay: 0.1 }}
-            className="mt-8 flex flex-col md:col-span-5 md:mt-0 md:pl-1"
+            className={`mt-8 flex flex-col md:col-span-5 md:mt-0 md:pl-1 ${SECTION_REVEAL_Y}`}
           >
             <span className="inline-flex w-fit items-center gap-2 text-sm font-bold tracking-[0.2em] text-brand/60">
               <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-accent" />

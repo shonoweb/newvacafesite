@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
-import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
 
 const INFO_ROWS = [
   { label: "住所", value: "大阪・中崎町" },
@@ -20,6 +20,7 @@ export function Location() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT_ONCE}
           transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
+          className={SECTION_REVEAL_Y}
         >
           <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
             VISIT US
@@ -52,7 +53,7 @@ export function Location() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={VIEWPORT_ONCE}
           transition={{ duration: DURATION.base, delay: 0.1, ease: EASE_SMOOTH }}
-          className="relative flex h-[240px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-brand-base sm:h-[260px] md:h-[300px]"
+          className={`relative flex h-[240px] w-full flex-col items-center justify-center gap-3 overflow-hidden rounded-3xl bg-brand-base sm:h-[260px] md:h-[300px] ${SECTION_REVEAL_Y}`}
           style={{
             backgroundImage:
               "linear-gradient(rgba(38,22,6,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(38,22,6,0.06) 1px, transparent 1px)",

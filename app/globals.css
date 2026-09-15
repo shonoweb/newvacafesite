@@ -50,6 +50,19 @@ body {
   display: none;
 }
 
+/* Pairs with SECTION_REVEAL_Y in lib/motion.ts. Forces section-level
+   Framer Motion reveals to opacity-only below 768px: the server can't
+   know the client's viewport width, so `initial={{ y: ... }}` always
+   renders into the SSR HTML regardless of the eventual client viewport —
+   a plain media query is the one thing that's correct on the very first
+   paint on mobile, independent of that. Only `transform` is forced; the
+   opacity fade these sections use is untouched on any viewport. */
+@media (max-width: 767px) {
+  .section-reveal-y {
+    transform: none !important;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

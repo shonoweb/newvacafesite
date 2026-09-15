@@ -7,7 +7,7 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { MarqueeTrack } from "@/components/ui/menu-marquee";
 import { MENU_ITEMS, type MenuItem } from "@/data/menu";
-import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
+import { DURATION, EASE_SMOOTH, SECTION_REVEAL_Y, VIEWPORT_ONCE } from "@/lib/motion";
 import { FOCUS_RING } from "@/lib/styles";
 import { useMediaQuery } from "@/lib/use-media-query";
 
@@ -206,7 +206,7 @@ export function Menu() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={VIEWPORT_ONCE}
         transition={{ duration: DURATION.base, ease: EASE_SMOOTH }}
-        className="mx-auto flex max-w-6xl flex-col gap-3 px-5 sm:px-8"
+        className={`mx-auto flex max-w-6xl flex-col gap-3 px-5 sm:px-8 ${SECTION_REVEAL_Y}`}
       >
         <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
           MENU
