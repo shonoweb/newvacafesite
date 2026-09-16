@@ -50,6 +50,7 @@ export function About() {
               alt="観葉植物とカウンターがあるNEWVA CAFEの店内"
               fill
               sizes="58vw"
+              quality={70}
               className="object-cover"
             />
           </motion.div>
@@ -67,6 +68,7 @@ export function About() {
               alt="観葉植物とカウンターがあるNEWVA CAFEの店内"
               fill
               sizes="100vw"
+              quality={70}
               className="object-cover"
             />
           </div>

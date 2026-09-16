@@ -37,6 +37,13 @@ export function Hero() {
         fill
         preload
         sizes="100vw"
+        // Lighthouse flagged this specific image for its compression
+        // factor (71 KiB estimated savings at the default quality=75) —
+        // not its dimensions, which are already correctly sized for
+        // 100vw. 70 is a standard, visually-safe trim for a busy
+        // photographic background sitting under text/overlays; crop,
+        // brightness, and saturation are untouched.
+        quality={70}
         className="object-cover brightness-[1.16] saturate-[1.05]"
       />
       {/* Bottom fade: keeps the title/copy/button readable against the photo. */}
@@ -58,31 +65,48 @@ export function Hero() {
           />
         </h1>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{
-            duration: prefersReducedMotion ? 0 : 0.7,
-            delay: prefersReducedMotion ? 0 : 0.9,
-            ease: EASE_SMOOTH,
-          }}
-          className="flex max-w-xl flex-col gap-6"
-        >
+        {/* Measured (Lighthouse LCP breakdown) as the actual LCP element:
+            this paragraph. Chrome's LCP algorithm withholds the "painted"
+            timestamp for a text node until an opacity animation on it
+            finishes settling — with this paragraph previously inside the
+            same motion.div as the CTA, it couldn't paint until React had
+            hydrated AND that fade had run. Real-device measurement (Vercel
+            Preview, devtools throttling) showed ~4010ms of "element render
+            delay" despite every network resource finishing by ~455ms —
+            confirming it was hydration/animation-gated, not a resource
+            wait. This wrapper is now a plain div (was motion.div): the
+            paragraph is fully opaque from the very first SSR/CSS paint,
+            with zero Framer Motion or hydration dependency. Position,
+            font, size, color, width, and spacing are unchanged — same
+            `flex flex-col gap-6` container, same children, same classes.
+            Only the CTA below keeps its own fade-in, now in its own
+            motion.div so the paragraph's static state doesn't affect it. */}
+        <div className="flex max-w-xl flex-col gap-6">
           <p className="max-w-lg text-balance text-base leading-relaxed text-brand-base/90 sm:text-lg">
             コーヒーとケーキを気軽に楽しめる、街なかのカフェ。
             <br />
             朝8時から夜8時まで営業しています。
           </p>
 
-          <a
-            href="#menu"
-            onClick={handleSectionLinkClick}
-            className={`inline-flex w-fit items-center gap-2 rounded-full bg-brand-accent px-6 py-3.5 text-sm font-bold tracking-wide text-brand transition-transform duration-300 hover:scale-[1.03] focus-visible:scale-[1.03] ${FOCUS_RING}`}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              duration: prefersReducedMotion ? 0 : 0.6,
+              delay: prefersReducedMotion ? 0 : 0.1,
+              ease: EASE_SMOOTH,
+            }}
           >
-            VIEW MENU
-            <ArrowRight size={18} />
-          </a>
-        </motion.div>
+            <a
+              href="#menu"
+              onClick={handleSectionLinkClick}
+              className={`inline-flex w-fit items-center gap-2 rounded-full bg-brand-accent px-6 py-3.5 text-sm font-bold tracking-wide text-brand transition-transform duration-300 hover:scale-[1.03] focus-visible:scale-[1.03] ${FOCUS_RING}`}
+            >
+              VIEW MENU
+              <ArrowRight size={18} />
+            </a>
+          </motion.div>
+        </div>
       </div>
     </section>
   );
