@@ -24,32 +24,38 @@ export function WordsPullUp({
   const words = text.split(" ");
 
   return (
-    <span
-      ref={ref}
-      aria-label={text}
-      className={`inline-flex flex-wrap ${className}`}
-    >
-      {words.map((word, i) => {
-        const isLast = i === words.length - 1;
+    <span ref={ref} className={`inline-flex flex-wrap ${className}`}>
+      {/* Accessible name via plain visually-hidden text content, not
+          aria-label: a bare <span> has no ARIA role, and aria-label is
+          prohibited on elements without an accessible-name-supporting
+          role (axe-core: aria-prohibited-attr). Native text content
+          needs no ARIA at all — screen readers just read it — so this
+          reads "NEWVA CAFE" once, cleanly, while the decorative
+          word-by-word animation below is hidden from assistive tech as
+          a single group. */}
+      <span className="sr-only">{text}</span>
+      <span aria-hidden="true" className="inline-flex flex-wrap">
+        {words.map((word, i) => {
+          const isLast = i === words.length - 1;
 
-        return (
-          <motion.span
-            key={`${word}-${i}`}
-            aria-hidden="true"
-            initial={{ y: 20, opacity: 0 }}
-            animate={isInView ? { y: 0, opacity: 1 } : {}}
-            transition={{
-              duration: prefersReducedMotion ? 0 : 0.6,
-              delay: prefersReducedMotion ? 0 : delay + i * 0.08,
-              ease: EASE_SMOOTH,
-            }}
-            className={`inline-block ${wordClassName}`}
-            style={{ marginRight: isLast ? 0 : "0.28em" }}
-          >
-            {word}
-          </motion.span>
-        );
-      })}
+          return (
+            <motion.span
+              key={`${word}-${i}`}
+              initial={{ y: 20, opacity: 0 }}
+              animate={isInView ? { y: 0, opacity: 1 } : {}}
+              transition={{
+                duration: prefersReducedMotion ? 0 : 0.6,
+                delay: prefersReducedMotion ? 0 : delay + i * 0.08,
+                ease: EASE_SMOOTH,
+              }}
+              className={`inline-block ${wordClassName}`}
+              style={{ marginRight: isLast ? 0 : "0.28em" }}
+            >
+              {word}
+            </motion.span>
+          );
+        })}
+      </span>
     </span>
   );
 }

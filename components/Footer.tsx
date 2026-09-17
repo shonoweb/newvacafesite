@@ -40,7 +40,7 @@ export function Footer() {
       </div>
 
       <nav aria-label="フッターナビゲーション">
-        <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
+        <p className="text-xs font-bold tracking-[0.2em] text-brand-base/50">
           NAVIGATION
         </p>
         <ul className="mt-4 flex flex-col gap-3">
@@ -59,7 +59,7 @@ export function Footer() {
       </nav>
 
       <div>
-        <p className="text-xs font-bold tracking-[0.2em] text-brand-base/40">
+        <p className="text-xs font-bold tracking-[0.2em] text-brand-base/50">
           INFO
         </p>
         <ul className="mt-4 flex flex-col gap-3 text-sm text-brand-base/85">

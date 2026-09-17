@@ -33,7 +33,7 @@ export function MenuPageProductCard({ item }: { item: MenuItem }) {
             ¥{item.price.toLocaleString()}
           </span>
         </div>
-        <p className="mt-1 min-w-0 whitespace-normal break-words text-xs font-medium tracking-wide text-brand/50">
+        <p className="mt-1 min-w-0 whitespace-normal break-words text-xs font-medium tracking-wide text-brand/65">
           {item.name}
         </p>
         {item.description && (

@@ -8,7 +8,7 @@ import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 export function About() {
   const textContent = (
     <>
-      <span className="inline-flex w-fit items-center gap-2 text-sm font-bold tracking-[0.2em] text-brand/60">
+      <span className="inline-flex w-fit items-center gap-2 text-sm font-bold tracking-[0.2em] text-brand/65">
         <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-accent" />
         ABOUT
       </span>
@@ -23,7 +23,7 @@ export function About() {
         エスプレッソを使った定番のドリンクと、店内で仕上げる3種類のケーキをご用意しています。朝のコーヒーにも、買い物途中の休憩にもどうぞ。
       </p>
 
-      <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs font-bold tracking-[0.15em] text-brand/45">
+      <div className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs font-bold tracking-[0.15em] text-brand/65">
         <span>COFFEE / CAKE / OSAKA</span>
         <span aria-hidden="true" className="text-brand/25">
           ・

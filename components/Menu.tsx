@@ -127,12 +127,12 @@ function MenuCard({ item }: { item: MenuItem }) {
             ¥{item.price.toLocaleString()}
           </span>
         </div>
-        <p className="min-w-0 whitespace-normal break-words text-xs text-brand/50">
+        <p className="min-w-0 whitespace-normal break-words text-xs text-brand/65">
           {item.name}
         </p>
 
         {item.description && (
-          <p className="mt-1.5 line-clamp-1 text-sm text-brand/60">
+          <p className="mt-1.5 line-clamp-1 text-sm text-brand/65">
             {item.description}
           </p>
         )}
@@ -196,12 +196,12 @@ function MobileMenuCard({ item }: { item: MenuItem }) {
             ¥{item.price.toLocaleString()}
           </span>
         </div>
-        <p className="min-w-0 whitespace-normal break-words text-xs text-brand/50">
+        <p className="min-w-0 whitespace-normal break-words text-xs text-brand/65">
           {item.name}
         </p>
 
         {item.description && (
-          <p className="mt-1.5 line-clamp-1 text-sm text-brand/60">
+          <p className="mt-1.5 line-clamp-1 text-sm text-brand/65">
             {item.description}
           </p>
         )}
@@ -213,7 +213,7 @@ function MobileMenuCard({ item }: { item: MenuItem }) {
 export function Menu() {
   const heading = (
     <>
-      <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
+      <span className="text-sm font-bold tracking-[0.2em] text-brand/65">
         MENU
       </span>
       <h2 className="text-3xl font-black leading-tight sm:text-4xl">

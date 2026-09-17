@@ -14,7 +14,7 @@ const INFO_ROWS = [
 export function Location() {
   const infoContent = (
     <>
-      <span className="text-sm font-bold tracking-[0.2em] text-brand/60">
+      <span className="text-sm font-bold tracking-[0.2em] text-brand/65">
         VISIT US
       </span>
       <h2 className="mt-3 text-3xl font-black leading-tight sm:text-4xl">
@@ -27,7 +27,7 @@ export function Location() {
             key={row.label}
             className="flex flex-col gap-1 border-b border-brand/10 pb-4 sm:flex-row sm:items-baseline sm:gap-6"
           >
-            <dt className="w-24 shrink-0 text-sm font-bold text-brand/50">
+            <dt className="w-24 shrink-0 text-sm font-bold text-brand/65">
               {row.label}
             </dt>
             <dd className="text-brand">{row.value}</dd>
@@ -35,7 +35,7 @@ export function Location() {
         ))}
       </dl>
 
-      <p className="mt-6 text-sm text-brand/50">
+      <p className="mt-6 text-sm text-brand/65">
         ※本サイトは制作サンプルのため、架空の店舗情報を掲載しています。
       </p>
     </>
@@ -48,7 +48,7 @@ export function Location() {
       </span>
       <div className="text-center">
         <p className="text-xl font-black tracking-tight text-brand">OSAKA</p>
-        <p className="mt-1 text-xs font-bold tracking-[0.25em] text-brand/50">
+        <p className="mt-1 text-xs font-bold tracking-[0.25em] text-brand/65">
           NAKAZAKICHO
         </p>
       </div>
