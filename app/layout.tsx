@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Noto_Sans_JP } from "next/font/google";
 import Script from "next/script";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { ScrollReset } from "@/components/ScrollReset";
 import { NavMenuProvider } from "@/components/nav-menu-context";
 import { NavOverlay } from "@/components/NavOverlay";
@@ -142,6 +143,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <FloatingNavButton />
           <NavOverlay />
         </NavMenuProvider>
+        <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID ?? ""} />
       </body>
     </html>
   );
