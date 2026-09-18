@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   title: "MENU | NEWVA CAFE",
   description:
     "NEWVA CAFEのドリンク・ケーキメニュー一覧。エスプレッソを使ったドリンク10種と、自家製ケーキ3種の価格と説明をご紹介します。",
+  alternates: {
+    canonical: "/menu",
+  },
 };
 
 const GRID_CLASSES =

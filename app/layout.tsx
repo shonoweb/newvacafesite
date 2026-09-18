@@ -5,6 +5,7 @@ import { ScrollReset } from "@/components/ScrollReset";
 import { NavMenuProvider } from "@/components/nav-menu-context";
 import { NavOverlay } from "@/components/NavOverlay";
 import { FloatingNavButton } from "@/components/FloatingNavButton";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 const notoSansJP = Noto_Sans_JP({
@@ -15,13 +16,18 @@ const notoSansJP = Noto_Sans_JP({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "NEWVA CAFE | Coffee & Cafe",
   description:
     "NEWVA CAFEは、コーヒーと自家製ケーキを楽しめる街なかのカフェです。明るく open な店内で、日常的に立ち寄れる一杯を。",
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
     title: "NEWVA CAFE | Coffee & Cafe",
     description:
       "NEWVA CAFEは、コーヒーと自家製ケーキを楽しめる街なかのカフェです。明るく open な店内で、日常的に立ち寄れる一杯を。",
+    url: "/",
     type: "website",
     locale: "ja_JP",
   },
