@@ -8,8 +8,7 @@ import { DURATION, EASE_SMOOTH, VIEWPORT_ONCE } from "@/lib/motion";
 export function About() {
   const textContent = (
     <>
-      <span className="inline-flex w-fit items-center gap-2 text-sm font-bold tracking-[0.2em] text-brand/65">
-        <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-brand-accent" />
+      <span className="inline-flex w-fit items-center text-sm font-bold tracking-[0.2em] text-brand/65">
         ABOUT
       </span>
 
