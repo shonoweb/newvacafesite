@@ -24,6 +24,12 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  icons: {
+    icon: {
+      url: "/favicon-newva-cafe-v2.svg",
+      type: "image/svg+xml",
+    },
+  },
   openGraph: {
     title: "NEWVA CAFE | Coffee & Cafe",
     description:
