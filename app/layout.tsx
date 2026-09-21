@@ -24,13 +24,15 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
+  // favicon.ico is handled entirely by Next.js's own app/favicon.ico file
+  // convention (it auto-generates both a shortcut-icon and a hashed
+  // icon <link> for it) — declaring it again here would duplicate those
+  // tags, so only the assets with no file-convention counterpart
+  // (the SVG fallback, the apple touch icon) are listed explicitly.
   icons: {
-    icon: [
-      { url: "/favicon-newva-cafe-v3-32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-newva-cafe-v2.svg", type: "image/svg+xml" },
-    ],
+    icon: [{ url: "/favicon-newva-cafe-v2.svg", type: "image/svg+xml" }],
     apple: [
-      { url: "/apple-touch-icon-newva-cafe-v3.png", sizes: "180x180", type: "image/png" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {
